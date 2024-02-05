@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    .section-animation-one,
+    .section-animation-two,
+    .section-animation-three {
+        height: 100vh;
+        margin-top: 100px;
+    }
+
+    .c-width {
+        max-width: 1040px;
+        margin: 10px auto;
+    }
+
+    .option {
+        display: inline-block;
+        padding: 10px 0 10px 0px;
+        cursor: pointer;
+        color: #000;
+        text-decoration: none;
+        position: relative;
+        margin: 0 4px;
+        width: 215px;
+        text-align: center;
+        font-size: 17px;
+        font-weight: 500;
+        overflow: hidden;
+    }
+
+    .option:before {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -2px;
+        width: 100%;
+        height: 5px;
+        background-color: #CCCCCC;
+    }
+
+    .option.active::after {
+        content: "";
+        position: absolute;
+        left: -100%;
+        bottom: -2px;
+        width: 100%;
+        height: 5px;
+        background-color: #4e55fd;
+        animation: fillProgress 2s linear forwards;
+    }
+
+    .option.active-user-click::after {
+        content: "";
+        position: absolute;
+        left: -100%;
+        bottom: -2px;
+        width: 100%;
+        height: 5px;
+        background-color: #4e55fd;
+        animation: fillProgress linear forwards;
+    }
+
+    @keyframes fillProgress {
+        to {
+            left: 0;
+        }
+    }
+
+    .user-roles {
+        display: flex;
+        margin-bottom: 70px;
+    }
+
+    .option-roles {
+        padding: 10px 0;
+        text-align: center;
+        display: block;
+        transition: border-color .5s;
+        text-decoration: none;
+        width: 214px;
+        margin: 0 3px;
+        background-color: #ffffff;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .roles-active {
+        background: linear-gradient(to right, rgba(37, 117, 252, 1), rgba(106, 17, 203, 1));
+        color: #fff;
+    }
+</style>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+<body>
+
+    <section class="section-animation-one carousel-container">
+        <div class="container c-width">
+            <div class="carousel carousel slide" data-bs-ride="false">
+                <div class="carousel-inner">
+
+                    <h3 class="cth-title">Top Anime's</h3>
+
+                    <div class="user-roles">
+                        <div class="carousel-button border-role option-roles roles-active" data-carousel-target="0"
+                            data-option="busniess-leader">
+                            One Piece
+                        </div>
+                        <div class="carousel-button border-role option-roles" data-carousel-target="1"
+                            data-option="data-leader">
+                            Naruto</div>
+                        <div class="carousel-button border-role option-roles" data-carousel-target="2"
+                            data-option="analyst">
+                            Demon Slayer
+                        </div>
+                        <div class="carousel-button border-role option-roles" data-carousel-target="3"
+                            data-option="product-builder">
+                            Black Clover</div>
+                        <div class="carousel-button border-role option-roles" data-carousel-target="4" class="option"
+                            data-option="developer">Seven Deadly Sins</div>
+                    </div>
+
+                    <div class="carousel-item active">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="cth-content">Predict your cloud spend and track against the budget</div>
+                                <p class="cth-p">
+                                    ML-based predictive model lets you accurately track, analyze and forecast your
+                                    combined cloud costs down to the product and business units.
+                                </p>
+                                <button class="cth-btn" data-target=".finance">Learn more</button>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="">
+                                    <div class="text-center">
+                                        <div class="finops-roles-content">
+                                            <div class="finops-roles-text-center">
+                                                <picture id="busniess-leader-video" class="slide-video">
+                                                    <!-- <img src="assets/images/finops-roles/finance.png" class="img-fluid"
+                                                        width="384" height="384"> -->
+                                                </picture>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-item">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="cth-content">Plan and Track your product specific cloud costs</div>
+                                <p class="cth-p">
+                                    And pinpoint key optimization opportunities without impacting your performance
+                                    SLAs.
+                                    Further collaborate and enforce governance and approval flows to drive shared
+                                    accountability.
+                                </p>
+                                <button class="cth-btn" data-target=".product-owner">Learn more</button>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="">
+                                    <div class="text-center">
+                                        <div class="finops-roles-content">
+                                            <div class="finops-roles-text-center">
+                                                <picture id="data-leader-video" class="slide-video">
+                                                    <!-- <img src="assets/images/finops-roles/product_owner.png"
+                                                        class="img-fluid" width="384" height="384"> -->
+                                                </picture>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-item">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="cth-content">Proactively manage and optimize your multi-cloud
+                                    environments
+                                </div>
+                                <p class="cth-p">
+                                    With AI-powered high yield resource optimization recommendations and real-time
+                                    anomaly detection and alerts.
+                                </p>
+                                <button class="cth-btn" data-target=".engineering">Learn more</button>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="">
+                                    <div class="text-center">
+                                        <div class="finops-roles-content">
+                                            <div class="finops-roles-text-center">
+                                                <picture id="product-builder-video" class="slide-video">
+                                                    <!-- <img src="assets/images/finops-roles/engineering.png"
+                                                        class="img-fluid" width="384" height="384"> -->
+                                                </picture>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-item">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="cth-content">Maximize your Cloud ROI through an end-to-end FinOps
+                                    platform
+                                </div>
+                                <p class="cth-p">
+                                    Track and Optimize your unit-cost economics and make data-driven spend
+                                    decisions.
+                                    Enable cross-functional collaboration through a unified AI-powered platform.
+                                </p>
+                                <button class="cth-btn">Learn more</button>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="">
+                                    <div class="text-center">
+                                        <div class="finops-roles-content">
+                                            <div class="finops-roles-text-center">
+                                                <picture id="developer-video" class="slide-video">
+                                                    <!-- <img src="assets/images/finops-roles/executive.png"
+                                                        class="img-fluid" width="384" height="384"> -->
+                                                </picture>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-item">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <div class="cth-content">Create transparency and shared accountability for
+                                    optimizing
+                                    cloud costs</div>
+                                <p class="cth-p">
+                                    Leverages this platform to define standards, onboard users and implement
+                                    end-to-end
+                                    FinOps across your multi-cloud environment.
+                                </p>
+                                <button class="cth-btn">Learn more</button>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="">
+                                    <div class="text-center">
+                                        <div class="finops-roles-content">
+                                            <div class="finops-roles-text-center">
+                                                <picture id="analyst-video" class="slide-video">
+                                                    <!-- <img src="assets/images/finops-roles/finops_practitioner.png"
+                                                        class="img-fluid" width="384" height="384"> -->
+                                                </picture>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="section-animation-two finance carousel-container">
+        <div class="container c-width">
+            <div class="carousel carousel slide" data-bs-ride="false" data-bs-interval="false">
+                <div class="carousel-inner">
+
+                    <div>DEMON SLAYER</div>
+                    <h3 class="cth-title">Watch the short anime<br> in anime watch tv</h3>
+
+                    <div class="user-roles">
+                        <div class="carousel-button option" data-carousel-target="0" data-option="search">
+                            Tanjiro
+                        </div>
+                        <div class="carousel-button option" data-carousel-target="1" data-option="visualize">
+                            Inosuke
+                        </div>
+                        <div class="carousel-button option" data-carousel-target="2" class="option"
+                            data-option="monitor">
+                            Zenitsu
+                        </div>
+                    </div>
+
+                    <div class="carousel-item active">
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <div>
+                                    <!-- <img class="slide-video" src="assets/images/finops-servieces/finance_analyze.png"> -->
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div>
+                                    <div class="cth-content">Analyze cloud spend at the speed of your thought</div>
+                                    <p class="cth-p">
+                                        Through a conversational style NLP AI-powered interface with rich, accurate
+                                        and actionable insights.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-item">
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <div>
+                                    <!-- <img class="slide-video" src="assets/images/finops-servieces/finance_forecast.png"> -->
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div>
+                                    <div class="cth-content">Track Actuals and Forecast to Budget</div>
+                                    <p class="cth-p">
+                                        Drill down into your forecast data across multiple dimensions including
+                                        across cloud providers, product and business units.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="carousel-item">
+                        <div class="row">
+                            <div class="col-sm-8">
+                                <div>
+                                    <!-- <img class="slide-video" src="assets/images/finops-servieces/finance_forecast.png"> -->
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div>
+                                    <div class="cth-content">Customize and automate your charge-back reports </div>
+                                    <p class="cth-p">
+                                        With the ability to apply allocation rules across shared resources and
+                                        blended rate.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    </section>
+
+    <section class="section-animation-three carousel-container">
+        <div class="container c-width">
+            <div class="carousel carousel slide product-owner" data-bs-ride="false" data-bs-interval="false">
+                <div class="carousel-inner">
+                    <div>ONE PIECE</div>
+                    <h3 class="cth-title">Watch the never ending piece<br> in anime watch tv</h3>
+                    <div class="user-roles">
+                        <div class="carousel-button option" data-carousel-target="0" data-option="search">
+                            Luffy
+                        </div>
+                        <div class="carousel-button option " data-carousel-target="1" data-option="visualize">
+                            Zoro
+                        </div>
+                    </div>
+                    <div class="carousel-item active">
+                        <div class="row">
+                            <div class="col-md-4 order-2 order-md-1">
+                                <div>
+                                    <div>
+                                        <div class="cth-content">Visualize and drill down into your cloud spend and
+                                            KPIs</div>
+                                        <p class="cth-p">
+                                            By analyzing historical trends and key growth drivers across your
+                                            multi-cloud services.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-8 order-1 order-md-2">
+                                <div>
+                                    <div>
+                                        <!-- <img class="slide-video"
+                                            src="assets/images/finops-servieces/product_govern.png"> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="row">
+                            <div class="col-md-4 order-2 order-md-1">
+                                <div>
+                                    <div class="cth-content">Define governance and allocation standards and approval
+                                        flows</div>
+                                    <p class="cth-p">
+                                        And set thresholds and real-time alerts for any cost-spikes and overruns.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-8 order-1 order-md-2">
+                                <div>
+                                    <div>
+                                        <!-- <img class="slide-video"
+                                            src="assets/images/finops-servieces/product_govern.png"> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous">
+        </script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+        crossorigin="anonymous"></script>
+    <script>
+        $(document).ready(function () {
+            $('.carousel-container').each(function (index) {
+                var carouselId = 'carouselExample' + (index + 1);
+                var buttonContainer = $(this);
+                var carousel = $(this).find('.carousel');
+                var options = buttonContainer.find('.carousel-button');
+                var optionsBorder = buttonContainer.find('.border-role');
+                var currentIndex = 0;
+                var firstClick = true;
+                var hasLoggedSectionOne = false;
+                var hasLoggedSectionTwo = false;
+                var hasLoggedSectionThree = false;
+                var hasLoggedSectionFour = false;
+                var hasLoggedSectionFive = false;
+
+                // var isInViewport = function(elem) {
+                //         var bounding = elem.getBoundingClientRect();
+                //         return (
+                //             bounding.top >= 0 &&
+                //             bounding.left >= 0 &&
+                //             bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                //             bounding.right <= (window.innerWidth || document.documentElement.clientWidth)
+                //         );
+                //     };
+
+                var isInViewport = function (elem) {
+                    var bounding = elem.getBoundingClientRect();
+                    var viewportHeight = 1340;
+                    return (
+                        bounding.top >= 0 &&
+                        bounding.left >= 0 &&
+                        bounding.bottom <= viewportHeight &&
+                        bounding.right <= (window.innerWidth || document.documentElement.clientWidth)
+                    );
+                };
+
+                var getFirstViewportClass = function () {
+                    var sname;
+                    if (!hasLoggedSectionOne && isInViewport($('.section-animation-one')[0])) {
+                        sname = "section-animation-one";
+                        hasLoggedSectionOne = true;
+                    } else if (!hasLoggedSectionTwo && isInViewport($('.section-animation-two')[0])) {
+                        sname = "section-animation-two";
+                        hasLoggedSectionTwo = true;
+                    } else if (!hasLoggedSectionFive && isInViewport($('.section-animation-three')[0])) {
+                        sname = "section-animation-three";
+                        hasLoggedSectionFive = true;
+                    }
+
+                    if (buttonContainer.hasClass(sname)) {
+                        buttonContainer.find('.carousel-button[data-carousel-target="0"]').addClass('active');
+                        buttonContainer.find('.border-role[data-carousel-target="0"]').addClass('roles-active');
+                        function nextItem() {
+                            if (currentIndex < options.length - 1) {
+                                currentIndex++;
+                                options.eq(currentIndex).click();
+                            } else {
+                                clearInterval(interval);
+                            }
+                        }
+
+                        var interval = setInterval(nextItem, 3000);
+
+                        options.click(function () {
+                            var targetIndex = $(this).data('carousel-target');
+                            carousel.carousel(targetIndex);
+                            if (firstClick) {
+                                buttonContainer.find('.carousel-button.active').removeClass('active');
+                                $(this).addClass('active');
+                                if (currentIndex === options.length - 1) {
+                                    firstClick = false;
+                                    clearInterval(interval);
+                                }
+                                if (targetIndex !== currentIndex) {
+                                    buttonContainer.find('.carousel-button.active').removeClass('active');
+                                    buttonContainer.find('.carousel-button.active-user-click').removeClass('active-user-click');
+                                    $(this).addClass('active-user-click');
+                                    firstClick = false;
+                                    clearInterval(interval);
+                                }
+                            } else {
+                                buttonContainer.find('.carousel-button.active').removeClass('active');
+                                buttonContainer.find('.carousel-button.active-user-click').removeClass('active-user-click');
+                                $(this).addClass('active-user-click');
+                            }
+                        });
+
+                        optionsBorder.click(function () {
+                            var targetIndex = $(this).data('carousel-target');
+                            carousel.carousel(targetIndex);
+                            if (firstClick) {
+                                buttonContainer.find('.border-role').removeClass('roles-active');
+                                $(this).addClass('roles-active');
+                                if (currentIndex === options.length - 1) {
+                                    firstClick = false;
+                                    clearInterval(interval);
+                                }
+                                if (targetIndex !== currentIndex) {
+                                    buttonContainer.find('.border-role').removeClass('roles-active');
+                                    $(this).addClass('roles-active');
+                                    firstClick = false;
+                                    clearInterval(interval);
+                                }
+                            } else {
+                                buttonContainer.find('.border-role').removeClass('roles-active');
+                                $(this).addClass('roles-active');
+                            }
+                        });
+
+                    }
+                };
+                getFirstViewportClass();
+
+                $(window).scroll(function () {
+                    getFirstViewportClass();
+                });
+            });
+        });
+
+        if (history.scrollRestoration) {
+            history.scrollRestoration = 'manual';
+        } else {
+            window.onbeforeunload = function () {
+                window.scrollTo(0, 0);
+            }
+        }
+    </script>
+
+</body>
+
+
+</html>
