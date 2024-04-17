@@ -1,3 +1,4 @@
+// First time callback usage in work
 const buildDropdown = (callback) => {
     $.ajax({
         type: "POST",
