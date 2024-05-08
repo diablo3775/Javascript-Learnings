@@ -1,0 +1,2264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="
+https://cdn.jsdelivr.net/npm/apexcharts@3.49.0/dist/apexcharts.min.css
+" rel="stylesheet">
+
+</head>
+<body>
+    <div class="chart-data" onclick="buildForecastPageContent()"></div>
+    <div class="page-title"></div>
+    <div class="page-content"></div>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="
+https://cdn.jsdelivr.net/npm/apexcharts@3.49.0/dist/apexcharts.min.js
+"></script>
+<script src="snowflake_usage_data.js"></script>
+<script src="
+https://cdn.jsdelivr.net/npm/moment@2.30.1/moment.min.js
+"></script>
+<script src="common.js"></script>
+<script>
+    var awsForecastJSLoad = "";
+
+let forecastData = {
+    All: [
+        {
+            "cloud_service": "All",
+            "elements_one": "OverallCost_column_stacked",
+            "window_chart": "window.overAllChart",
+            "cost_average": "overAllCostAverage",
+            "series": [
+                {
+                    name: "Actual",
+                    data: "rawData.values",
+                },
+                {
+                    name: "Forecast High",
+                    data: [null, null, null, null, null, null, null, null, null, null, null, null,1197868,	1347868, 1447868, 1547868, 1647868 ],
+                },
+                {
+                    name: "Forecast",
+                    data: [null, null, null, null, null, null, null, null, null, null, null, 1047868, 1097868, 1147868, 1247868, 1347868, 1447868 ],
+                },
+                {
+                    name: "Forecast Low",
+                    data: [null, null, null, null, null, null, null, null, null, null, null, null,997868,	997868,	1057868, 1117868, 1177868 ],
+                }
+            ],
+            "service_total_cost": ".total-cost",
+            "elements_two": "OverallCost_column_stacked-2",
+        },
+    ],
+    Compute: [
+        {
+            "cloud_service": "Compute",
+            "elements_one": "compute_column_stacked",
+            "window_chart": "window.computeChart",
+            "cost_average": "ComputeCost_average",
+            "series": [
+                { 
+                    name: "Actual",
+                     data:  "rawData.values" 
+                },
+                {
+                    name: "Forecast High",
+                    data: [null, null, null, null, null, null, null, null, null, null, null, null,652686, 692686, 721686, 740686, 769686],
+                },
+                {
+                    name: "Forecast",
+                    data: [null, null, null, null, null, null, null, null, null, null, null, 602686, 622686,	632686,	652686,	662686,	682686],
+                },
+                {
+                    name: "Forecast Low",
+                    data: [null, null, null, null, null, null, null, null, null, null, null, null,592686, 593186, 593686, 594186, 594686],
+                }
+            ],
+            "service_total_cost": ".Compute-Cost-total-cost",
+            "elements_two": "compute_column_stacked-2",
+        },
+    ],
+    Storage: [
+        {
+		    "cloud_service": "Storage",
+		    "elements_one": "storage_column_stacked",
+		    "window_chart": "window.storageChart",
+		    "cost_average": "StorageCost_average",
+		    "series": [
+		        { 
+		            name: "Actual",
+		            data:  "rawData.values" 
+		        },
+		        {
+		            name: "Forecast High",
+		            data: [null, null, null, null, null, null, null, null, null, null, null, null,359596,400596,410596,430596,450596],
+		        },
+		        {
+		            name: "Forecast",
+		            data: [null, null, null, null, null, null, null, null, null, null, null, 295596, 325596,350596,360596,370596,380596]
+		        },
+		        {
+		            name: "Forecast Low",
+		            data: [null, null, null, null, null, null, null, null, null, null, null, null,300596,290796,290596,300596,309596],
+		        }
+		    ],
+		    "service_total_cost": ".StorageCost-total-cost",
+		    "elements_two": "compute_column_stacked-2",
+		}
+    ],
+	CloudService: [
+		{
+		    "cloud_service": "Cloud Service",
+		    "elements_one": "CloudServiceCost_column_stacked",
+		    "window_chart": "window.cloudServiceChart",
+		    "cost_average": "CloudServiceCost_average",
+		    "series": [
+		        { 
+		            name: "Actual",
+		             data:  "rawData.values" 
+		        },
+		        {
+		            name: "Forecast High",
+		            data: [null, null, null, null, null, null, null, null, null, null, null, null,51218,54218,56218,58218,60218],
+		        },
+		        {
+		            name: "Forecast",
+		            data: [null, null, null, null, null, null, null, null, null, null, null, 48218,49218,50218,52218,53218,54218]
+		        },
+		        {
+		            name: "Forecast Low",
+		            data: [null, null, null, null, null, null, null, null, null, null, null, null,47518,47218,48218,48918,49218],
+		        }
+		    ],
+		    "service_total_cost": ".CloudServiceCost-total-cost",
+		    "elements_two": "CloudServiceCost_column_stacked-2",
+		},
+	],
+	DataTransfer: [
+		{
+		    "cloud_service": "Data Transfer",
+		    "elements_one": "DataTransferCost_column_stacked",
+		    "window_chart": "window.dataTransferCostChart",
+		    "cost_average": "DataTransferCost_average",
+		    "series": [
+		        { 
+		            name: "Actual",
+		             data:  "rawData.values" 
+		        },
+		        {
+		            name: "Forecast High",
+		            data: [null, null, null, null, null, null, null, null, null, null, null, null, 52218,55218,57218,60218,63218],
+		        },
+		        {
+		            name: "Forecast",
+		            data: [null, null, null, null, null, null, null, null, null, null, null, 42952, 48218,50218,52218,53218,55218]
+		        },
+		        {
+		            name: "Forecast Low",
+		            data: [null, null, null, null, null, null, null, null, null, null, null, null, 45218,44918,45218,45918,46218],
+		        }
+		    ],
+		    "service_total_cost": ".DataTransferCost-total-cost",
+		    "elements_two": "DataTransferCost_column_stacked-2",
+		},
+	]
+}
+
+function buildForecastPageContent(){
+  $(".page-title").empty().append("Forecast");
+
+	var pageContent = '';
+	pageContent+= '<div class="container-fluid">\
+    <div class="row">\
+        <div class="col-xxl-9 forcasting-content">\
+            <!-- end row -->\
+            <div class="card">\
+                <div class="card-body pb-0">\
+                    <div class="d-flex align-items-start">\
+                        <div class="d-flex flex-grow-1 align-items-center">\
+                            <img src="assets/images/brands/aws.png" style="max-height:30px;"/>\
+                            <h5 class="card-title mb-3 d-inline-block ms-2">Overall Cost <span class="applied-drpdwns"></span></h5>\
+                        </div>\
+                        <button type="button" class="btn ask-fi-btn" onclick="askFIModal(this,1);">Ask FI</button>\
+                        <div class="dropdown dropdown-width" id="Top_warehouses_btn">\
+                            <div class="dropdown-toggle" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></div>\
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">\
+                                <a class="dropdown-item dropdown-color" href="javascript:void(0);" id="downloadCsvTW">Download CSV</a>\
+                                <a class="dropdown-item dropdown-color" href="javascript:void(0);" class="btn" onclick="capture_spinner(`Top_warehouses`,`.loading-container-tw-btn`,`Top_warehouses_btn`)" title="Download as a png">Download PNG</a>\
+                            </div>\
+                          </div>\
+                    </div>\
+                    <div class="mt-3 mb-3">\
+                         <div class="d-flex flex-wrap align-items-center gap-2">\
+                           <h2 class="total-cost mb-0"></h2>\
+                         </div>\
+                    </div>\
+                    <div class="row gy-4">\
+                        <div class="col-xxl-12 mt-4">\
+                            <div>\
+                                <div id="OverallCost_column_stacked" class="apex-charts mb-3" dir="ltr"></div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                </div>\
+            </div>\
+            <div class="card">\
+                <div class="card-body pb-0">\
+                    <div class="d-flex align-items-start">\
+                        <div class="d-flex flex-grow-1 align-items-center">\
+						<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\
+						<!-- Generator: Sketch 64 (93537) - https://sketch.com -->\
+						<title>Icon-Architecture/16/Arch_Amazon-EC2_16</title>\
+						<desc>Created with Sketch.</desc>\
+						<defs>\
+							<linearGradient x1="0%" y1="100%" x2="100%" y2="0%" id="linearGradient-1">\
+								<stop stop-color="#C8511B" offset="0%"></stop>\
+								<stop stop-color="#FF9900" offset="100%"></stop>\
+							</linearGradient>\
+						</defs>\
+						<g id="Icon-Architecture/16/Arch_Amazon-EC2_16" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
+							<g id="Icon-Architecture-BG/16/Compute" fill="url(#linearGradient-1)">\
+								<rect id="Rectangle" x="0" y="0" width="24" height="24"></rect>\
+							</g>\
+							<path d="M15,9 L14,9 L13,9 L12,9 L11,9 L10,9 L10,10 L10,11 L10,12 L10,13 L10,14 L11,14 L12,14 L13,14 L14,14 L15,14 L15,13 L15,12 L15,11 L15,10 L15,9 Z M16,9 L17,9 L17,10 L16,10 L16,11 L17,11 L17,12 L16,12 L16,13 L17,13 L17,14 L16,14 L16,14.308 C16,14.689 15.689,15 15.308,15 L15,15 L15,16 L14,16 L14,15 L13,15 L13,16 L12,16 L12,15 L11,15 L11,16 L10,16 L10,15 L9.692,15 C9.311,15 9,14.689 9,14.308 L9,14 L8,14 L8,13 L9,13 L9,12 L8,12 L8,11 L9,11 L9,10 L8,10 L8,9 L9,9 L9,8.692 C9,8.311 9.311,8 9.692,8 L10,8 L10,7 L11,7 L11,8 L12,8 L12,7 L13,7 L13,8 L14,8 L14,7 L15,7 L15,8 L15.308,8 C15.689,8 16,8.311 16,8.692 L16,9 Z M12,19 L5,19 L5,13 L7,13 L7,12 L4.8,12 C4.358,12 4,12.342 4,12.762 L4,19.219 C4,19.65 4.351,20 4.781,20 L12.2,20 C12.642,20 13,19.658 13,19.238 L13,17 L12,17 L12,19 Z M20,4.781 L20,12.219 C20,12.65 19.649,13 19.219,13 L18,13 L18,12 L19,12 L19,5 L12,5 L12,6 L11,6 L11,4.781 C11,4.35 11.351,4 11.781,4 L19.219,4 C19.649,4 20,4.35 20,4.781 L20,4.781 Z" id="Amazon-EC2_Icon_16_Squid" fill="#FFFFFF"></path>\
+						</g>\
+					</svg>\
+                            <h5 class="card-title mb-1 d-inline-block ms-2">EC2<span class="applied-drpdwns"></span></h5>\
+                        </div>\
+                        <button type="button" class="btn ask-fi-btn" onclick="askFIModal(this,2);">Ask FI</button>\
+                        <div class="dropdown dropdown-width" id="Top_warehouses_btn">\
+                            <div class="dropdown-toggle" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></div>\
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">\
+                                <a class="dropdown-item dropdown-color" href="javascript:void(0);" id="downloadCsvTW">Download CSV</a>\
+                                <a class="dropdown-item dropdown-color" href="javascript:void(0);" class="btn" onclick="capture_spinner(`Top_warehouses`,`.loading-container-tw-btn`,`Top_warehouses_btn`)" title="Download as a png">Download PNG</a>\
+                            </div>\
+                          </div>\
+                    </div>\
+                    <div class="mt-3 mb-3">\
+                         <div class="d-flex flex-wrap align-items-center gap-2">\
+                           <h2 class="Compute-Cost-total-cost mb-0"></h2>\
+                         </div>\
+                    </div>\
+                    <div class="row gy-4">\
+                        <div class="col-xxl-12 mt-4">\
+                            <div>\
+                                <div id="compute_column_stacked" class="apex-charts mb-3" dir="ltr"></div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                </div>\
+            </div>\
+            <div class="card">\
+                <div class="card-body pb-0">\
+                    <div class="d-flex align-items-start">\
+                        <div class="d-flex flex-grow-1 align-items-center">\
+						<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">\
+						<!-- Generator: Sketch 64 (93537) - https://sketch.com -->\
+						<title>Icon-Architecture/16/Arch_Amazon-RDS_16</title>\
+						<desc>Created with Sketch.</desc>\
+						<defs>\
+							<linearGradient x1="0%" y1="100%" x2="100%" y2="0%" id="linearGradient-1">\
+								<stop stop-color="#2E27AD" offset="0%"></stop>\
+								<stop stop-color="#527FFF" offset="100%"></stop>\
+							</linearGradient>\
+						</defs>\
+						<g id="Icon-Architecture/16/Arch_Amazon-RDS_16" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">\
+							<g id="Icon-Architecture-BG/16/Database" fill="url(#linearGradient-1)">\
+								<rect id="Rectangle" x="0" y="0" width="24" height="24"></rect>\
+							</g>\
+							<path d="M5.707,5 L7.853,7.146 L7.146,7.854 L5,5.707 L5,7.5 L4,7.5 L4,4.5 C4,4.224 4.224,4 4.5,4 L7.5,4 L7.5,5 L5.707,5 Z M7.853,16.854 L5.707,19 L7.5,19 L7.5,20 L4.5,20 C4.224,20 4,19.776 4,19.5 L4,16.5 L5,16.5 L5,18.293 L7.146,16.146 L7.853,16.854 Z M5,12 C5,12.75 5.966,13.542 7.519,14.069 L7.199,15.016 C5.166,14.328 4,13.228 4,12 C4,10.772 5.166,9.672 7.199,8.984 L7.519,9.931 C5.966,10.458 5,11.25 5,12 L5,12 Z M19,16.5 L20,16.5 L20,19.5 C20,19.776 19.776,20 19.5,20 L16.5,20 L16.5,19 L18.293,19 L16.146,16.854 L16.853,16.146 L19,18.293 L19,16.5 Z M20,4.5 L20,7.5 L19,7.5 L19,5.707 L16.853,7.854 L16.146,7.146 L18.293,5 L16.5,5 L16.5,4 L19.5,4 C19.776,4 20,4.224 20,4.5 L20,4.5 Z M20,12 C20,13.228 18.834,14.328 16.801,15.016 L16.48,14.069 C18.034,13.542 19,12.75 19,12 C19,11.25 18.034,10.458 16.48,9.931 L16.801,8.984 C18.834,9.672 20,10.772 20,12 L20,12 Z M12,15.402 C10.81,15.402 10.087,15.104 10,15.032 L10,10.651 C10.564,10.886 11.294,11 12,11 C12.708,11 13.439,10.886 14.004,10.65 L14.02,14.952 C13.913,15.104 13.19,15.402 12,15.402 L12,15.402 Z M12,9 C13.174,9 13.858,9.336 13.987,9.5 C13.858,9.664 13.174,10 12,10 C10.771,10 10.08,9.632 10,9.531 L10,9.521 C10.08,9.368 10.771,9 12,9 L12,9 Z M12,8 C10.555,8 9,8.469 9,9.5 L9,15.032 C9,15.979 10.507,16.402 12,16.402 C13.493,16.402 15,15.979 15,15.032 L15,9.5 C15,8.469 13.445,8 12,8 L12,8 Z" id="Amazon-RDS_Icon_16_Squid" fill="#FFFFFF"></path>\
+						</g>\
+					</svg>\
+					<h5 class="card-title mb-1 d-inline-block ms-2">RDS<span class="applied-drpdwns"></span></h5>\
+                        </div>\
+                        <button type="button" class="btn ask-fi-btn" onclick="askFIModal(this,3);">Ask FI</button>\
+                        <div class="dropdown dropdown-width" id="Top_warehouses_btn">\
+                            <div class="dropdown-toggle" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></div>\
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">\
+                                <a class="dropdown-item dropdown-color" href="javascript:void(0);" id="downloadCsvTW">Download CSV</a>\
+                                <a class="dropdown-item dropdown-color" href="javascript:void(0);" class="btn" onclick="capture_spinner(`Top_warehouses`,`.loading-container-tw-btn`,`Top_warehouses_btn`)" title="Download as a png">Download PNG</a>\
+                            </div>\
+                          </div>\
+                    </div>\
+                    <div class="mt-3 mb-3">\
+                         <div class="d-flex flex-wrap align-items-center gap-2">\
+                           <h2 class="StorageCost-total-cost mb-0"></h2>\
+                         </div>\
+                    </div>\
+                    <div class="row gy-4">\
+                        <div class="col-xxl-12 mt-4">\
+                            <div>\
+                                <div id="storage_column_stacked" class="apex-charts mb-3" dir="ltr"></div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                </div>\
+            </div>\
+            <div class="card">\
+                <div class="card-body pb-0">\
+                    <div class="d-flex align-items-start">\
+                        <div class="d-flex flex-grow-1 align-items-center">\
+                            <img src="assets/images/awslogos/aws-ebs.jpeg" style="max-height:30px;"/>\
+                            <h5 class="card-title mb-1 d-inline-block ms-2">EBS<span class="applied-drpdwns"></span></h5>\
+                        </div>\
+                        <button type="button" class="btn ask-fi-btn" onclick="askFIModal(this,4);">Ask FI</button>\
+                        <div class="dropdown dropdown-width" id="Top_warehouses_btn">\
+                            <div class="dropdown-toggle" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></div>\
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">\
+                                <a class="dropdown-item dropdown-color" href="javascript:void(0);" id="downloadCsvTW">Download CSV</a>\
+                                <a class="dropdown-item dropdown-color" href="javascript:void(0);" class="btn" onclick="capture_spinner(`Top_warehouses`,`.loading-container-tw-btn`,`Top_warehouses_btn`)" title="Download as a png">Download PNG</a>\
+                            </div>\
+                          </div>\
+                    </div>\
+                    <div class="mt-3 mb-3">\
+                         <div class="d-flex flex-wrap align-items-center gap-2">\
+                           <h2 class="CloudServiceCost-total-cost mb-0"></h2>\
+                         </div>\
+                    </div>\
+                    <div class="row gy-4">\
+                        <div class="col-xxl-12 mt-4">\
+                            <div>\
+                                <div id="CloudServiceCost_column_stacked" class="apex-charts mb-3" dir="ltr"></div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                </div>\
+            </div>\
+            <div class="card">\
+                <div class="card-body pb-0">\
+                    <div class="d-flex align-items-start">\
+                        <div class="d-flex flex-grow-1 align-items-center">\
+                            <img src="assets/images/awslogos/aws-redshift.jpeg" style="max-height:30px;"/>\
+                            <h5 class="card-title mb-1 d-inline-block ms-2">RedShift<span class="applied-drpdwns"></span></h5>\
+                        </div>\
+                        <button type="button" class="btn ask-fi-btn" onclick="askFIModal(this,5);">Ask FI</button>\
+                        <div class="dropdown dropdown-width" id="Top_warehouses_btn">\
+                            <div class="dropdown-toggle" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></div>\
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">\
+                                <a class="dropdown-item dropdown-color" href="javascript:void(0);" id="downloadCsvTW">Download CSV</a>\
+                                <a class="dropdown-item dropdown-color" href="javascript:void(0);" class="btn" onclick="capture_spinner(`Top_warehouses`,`.loading-container-tw-btn`,`Top_warehouses_btn`)" title="Download as a png">Download PNG</a>\
+                            </div>\
+                          </div>\
+                    </div>\
+                    <div class="mt-3 mb-3">\
+                         <div class="d-flex flex-wrap align-items-center gap-2">\
+                           <h2 class="DataTransferCost-total-cost mb-0"></h2>\
+                         </div>\
+                    </div>\
+                    <div class="row gy-4">\
+                        <div class="col-xxl-12 mt-4">\
+                            <div>\
+                                <div id="DataTransferCost_column_stacked" class="apex-charts mb-3" dir="ltr"></div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                </div>\
+            </div>\
+        </div>\
+        <div class="col-xxl-3">\
+            <div class="user-sidebar">\
+                <div class="card">\
+                    <div class="card-body p-0">\
+                        <div class="user-profile-img">\
+                            <img src="assets/images/pattern-bg.jpg"\
+                                class="profile-img profile-foreground-img rounded-top" style="height: 120px;"\
+                                alt="">\
+                            <div class="overlay-content rounded-top">\
+                                <div>\
+                                    <div class="user-nav p-3">\
+                                        <div class="d-flex justify-content-end">\
+                                            <div class="dropdown">\
+                                                <a class="dropdown-toggle" href="#" role="button"\
+                                                    data-bs-toggle="dropdown" aria-expanded="false">\
+                                                    <i data-eva="more-horizontal-outline" data-eva-width="20" data-eva-height="20"\
+                                                        class="fill-white"></i>\
+                                                </a>\
+                                                <ul class="dropdown-menu dropdown-menu-end">\
+                                                    <li><a class="dropdown-item" href="#">Action</a></li>\
+                                                    <li><a class="dropdown-item" href="#">Another action</a>\
+                                                    </li>\
+                                                    <li><a class="dropdown-item" href="#">Something else\
+                                                            here</a></li>\
+                                                </ul>\
+                                            </div>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                            </div>\
+                        </div>\
+                        <!-- end user-profile-img -->\
+                        <div class="mt-n5 position-relative">\
+                            <div class="text-center">\
+                                <img src="assets/images/users/avatar-2.jpg" class="avatar-xl rounded-circle img-thumbnail">\
+                                <div class="mt-3">\
+                                    <h5 class="mb-1">Jacob David</h5>\
+                                    <p class="text-muted">AWS Manager</p>\
+                                </div>\
+                                <div class="mb-3">\
+                                    <a href="mailto:jacob.david@gmai.com" class="btn btn-outline-dark btn-sm br-5 me-1">\
+                                        <i class="fal fa-envelope"></i> Email\
+                                    </a>\
+                                    <button type="button" class="btn btn-outline-dark btn-sm br-5 ms-1">\
+                                        <i class="fal fa-comment"></i> Chat\
+                                    </button>\
+                                </div>\
+                            </div>\
+                        </div>\
+                    </div>\
+                    <!-- end card body -->\
+                </div>\
+                <!-- end card -->\
+            </div>\
+        </div>\
+    </div>\
+    <!-- end row -->\
+</div>\
+	<!-- container-fluid -->';
+	$(".page-content").empty().append(pageContent);
+	// buildTopNavFilters(0,1);
+	generateForecast("", "OverallCost_column_stacked","All")
+	generateForecast("", "compute_column_stacked","Compute")
+	generateForecast("", "storage_column_stacked","Storage")
+	generateForecast("", "CloudServiceCost_column_stacked","CloudService")
+	generateForecast("", "DataTransferCost_column_stacked","DataTransfer")
+	// OverAllCostForecast("","OverallCost_column_stacked");
+	// ComputeCost("","compute_column_stacked");
+	// StorageCost("","storage_column_stacked");
+	// CloudServiceCost("","CloudServiceCost_column_stacked");
+	// DataTransferCost("","DataTransferCost_column_stacked");
+	// AutomaticClusteringCost("","AutomaticClustering_column_stacked");
+	// ReplicationCost("","Replication_column_stacked");
+	$("#chart-column").attr("data-colors",'["#f1f3f7", "#3b76e1"]');
+	$("#chart-area").attr("data-colors",'["#3b76e1", "#f56e6e"]');
+	$("#chart-donut").attr("data-colors",'["#3b76e1", "#f1f3f7", "#f56e6e"]');
+}
+
+$(document).on("click",".top-accounts-filter a",function(){
+	if(appObj.pageName == "forecasting"){
+		var account_id = $(this).attr("value");
+		// getAllWarehousesBu_data(account_id);
+	}
+});
+
+// OverAllCost
+function formatNumberToUSD(number) {
+	return number.toLocaleString("en-US", {
+		minimumFractionDigits: 0,
+		maximumFractionDigits: 0,
+	});
+}
+
+function generateForecast(bu_name_parents,elements,service) {
+	let data = forecastData[service][0];
+	console.log(data)
+	let windowChart = data.window_chart;
+	let rawData = getTotalCountByDayForDateRange("2023-01-01","2023-12-31",data.cloud_service,"Monthly");
+	let extendedDates = rawData.dates.concat(["Jan 2024", "Feb 2024", "Mar 2024", "Apr 2024", "May 2024"]);
+
+
+	// let data = forecastData[service][0];
+	console.log(data.window_chart)
+
+ 
+	var height = 395;
+	if(elements == data.elements_one){
+		if (window.windowChart) {
+			// console.log(window.data.window_chart)
+			window.windowChart.destroy();
+		}
+	}
+	else{
+		height = 300;
+	}
+	
+    let series;
+	let total_cost = "";
+	let Total = 0;
+	$.each(rawData.values, function (index, value) {
+	    Total += Number(value) || 0;
+	});
+
+	let average = Total / 12;
+	let formattedTotal = formatNumberToUSD(average);
+
+// Use the function to format the total number
+	if (bu_name_parents == "Business Unit I") {
+	}  
+	else {
+			total_cost += `$${formattedTotal} <span  style = "font-size:17px;color:grey;font-weight: 100;">Avg Cost/Month <span style="color:black;font-weight:600;">All Business Units</span>  </span>`;
+	
+			series = [
+				{
+					name: "Actual",
+					data: rawData.values,
+				},
+				data.series[1],
+				data.series[2],
+				data.series[3]
+			];
+	}
+    $(data.service_total_cost).empty().append(total_cost);
+	// console.log(data.service_total_cost)
+    // Snowflake Chart
+    var options = {
+		series,
+		legend: {
+			show: true,
+			showForSingleSeries: true,
+			customLegendItems: ['Actual', 'Forecast'],
+			itemMargin: {
+				horizontal: 10,
+				vertical: 5,
+			},
+		},
+		stroke: {
+			width: [4, 1, 4, 1],
+			dashArray: [0, 25, 25, 25] // Solid line for 'Actual', dashed line for 'Forecast'
+		},
+		dataLabels: {
+			enabled: false,
+		},
+		yaxis: {
+			labels: {
+				formatter: function (value) {
+					// Format the y-axis labels as currency
+					return new Intl.NumberFormat('en-US', {
+						style: 'currency',
+						currency: 'USD',
+						minimumFractionDigits: 0,
+						maximumFractionDigits: 0
+					}).format(value);
+				},
+			},
+		},
+		chart: { type: "line", height: 395, stacked: false, toolbar: { show: false }, zoom: { enabled: true } },
+		tooltip: {
+			shared: true, // Enable shared tooltips
+			intersect: false, // Tooltip will show even if there is no data point
+			custom: function({ series, seriesIndex, dataPointIndex, w }) {
+				// Define the formatter for currency
+				let formatter = new Intl.NumberFormat('en-US', {
+					style: 'currency',
+					currency: 'USD',
+					minimumFractionDigits: 0,
+					maximumFractionDigits: 0
+				});
+		
+				// Get the date/name for the tooltip title
+				let name = extendedDates[dataPointIndex];
+		
+				// Start building the tooltip
+				let tooltipHtml = '<div class="apexcharts-tooltip-title" style="font-size: 12px;">' + name + '</div>';
+		
+				if (seriesIndex === 0) { // If hovering over 'Actual'
+					// Format the actual value as currency
+					let actualValue = series[seriesIndex][dataPointIndex];
+					let actualFormatted = actualValue !== null ? formatter.format(actualValue) : '-';
+		
+					// Append the actual value to the tooltip HTML
+					tooltipHtml += '<div class="apexcharts-tooltip-series-group" style="order: 1; display: flex;">' +
+						'<div class="apexcharts-tooltip-text" style="display: flex; flex-direction: column; align-items: flex-start;">' +
+						'<div class="apexcharts-tooltip-y-group">' +
+						'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">' + w.config.series[seriesIndex].name + ' : </span>' +
+						'<span class="apexcharts-tooltip-text-value">' + actualFormatted + '</span>' +
+						'</div>' +
+						'</div>' +
+						'</div>';
+				} else { // If hovering over 'Forecast' or any other series
+					// Get the values for all forecast series at the hovered data point
+					let forecastValue = series[1][dataPointIndex] !== null ? formatter.format(series[2][dataPointIndex]) : '-';
+					let forecastHighValue = series[2][dataPointIndex] !== null ? formatter.format(series[1][dataPointIndex]) : '-';
+					let forecastLowValue = series[3][dataPointIndex] !== null ? formatter.format(series[3][dataPointIndex]) : '-';
+		
+					// Append forecast values to the tooltip HTML
+					tooltipHtml += '<div class="apexcharts-tooltip-series-group" style="order: 1; display: flex;">' +
+    								'<div class="apexcharts-tooltip-text" style="display: flex; flex-direction: column; align-items: flex-end;">' + // align-items changed to flex-end for right alignment
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast High : </span>' + // font-weight: bold for series names
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastHighValue + '</span>' + // font-family changed for numbers
+    								'</div>' +
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast : </span>' +
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastValue + '</span>' +
+    								'</div>' +
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast Low : </span>' +
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastLowValue + '</span>' +
+    								'</div>' +
+    								'</div>' +
+    								'</div>';
+				}
+		
+				// Return the assembled tooltip HTML
+				return tooltipHtml;
+			}
+		},
+		responsive: [{ breakpoint: 480, options: { legend: { position: "bottom", offsetX: -10, offsetY: 0 } } }],
+		plotOptions: { bar: { horizontal: false, borderRadius: 0 } },
+		xaxis: { categories: extendedDates },
+		fill: { opacity: 1 },
+		colors: getChartColorsArrayForecast(data.elements_one),
+	};
+
+	windowChart = new ApexCharts(document.querySelector("#"+elements), options);
+    windowChart.render();
+	
+	if(elements == data.elements_two){
+		buildAskFIAnswerSummaryPrompt(extendedDates,series,"");
+	}
+}
+
+function OverAllCostForecast(bu_name_parents,elements) {
+	let rawData = getTotalCountByDayForDateRange("2023-01-01","2023-12-31","All","Monthly");
+	let extendedDates = rawData.dates.concat(["Jan 2024", "Feb 2024", "Mar 2024", "Apr 2024", "May 2024"]);
+ 
+	var height = 395;
+	if(elements == "OverallCost_column_stacked"){
+		if (window.myChart) {
+			window.myChart.destroy();
+		}
+	}
+	else{
+		height = 300;
+	}
+	
+    let series;
+	let total_cost = "";
+	let Total = 0;
+	$.each(rawData.values, function (index, value) {
+	    Total += Number(value) || 0;
+	});
+
+	let average = Total / 12;
+	let formattedTotal = formatNumberToUSD(average);
+
+// Use the function to format the total number
+	if (bu_name_parents == "Business Unit I") {
+	}  
+	else {
+			total_cost += `$${formattedTotal} <span  style = "font-size:17px;color:grey;font-weight: 100;">Avg Cost/Month <span style="color:black;font-weight:600;">All Business Units</span>  </span>`;
+	
+			series = [
+				{
+					name: "Actual",
+					data: rawData.values,
+				},
+				{
+					name: "Forecast High",
+					data: [null, null, null, null, null, null, null, null, null, null, null, null,1197868,	1347868, 1447868, 1547868, 1647868 ],
+				},
+				{
+					name: "Forecast",
+					data: [null, null, null, null, null, null, null, null, null, null, null, 1047868, 1097868, 1147868, 1247868, 1347868, 1447868 ],
+				},
+				{
+					name: "Forecast Low",
+					data: [null, null, null, null, null, null, null, null, null, null, null, null,997868,	997868,	1057868, 1117868, 1177868 ],
+				}
+			];
+	}
+    $(".total-cost").empty().append(total_cost);
+
+    // Snowflake Chart
+    var options = {
+		series,
+		legend: {
+			show: true,
+			showForSingleSeries: true,
+			customLegendItems: ['Actual', 'Forecast'],
+			itemMargin: {
+				horizontal: 10,
+				vertical: 5,
+			},
+		},
+		stroke: {
+			width: [4, 1, 4, 1],
+			dashArray: [0, 25, 25, 25] // Solid line for 'Actual', dashed line for 'Forecast'
+		},
+		dataLabels: {
+			enabled: false,
+		},
+		yaxis: {
+			labels: {
+				formatter: function (value) {
+					// Format the y-axis labels as currency
+					return new Intl.NumberFormat('en-US', {
+						style: 'currency',
+						currency: 'USD',
+						minimumFractionDigits: 0,
+						maximumFractionDigits: 0
+					}).format(value);
+				},
+			},
+		},
+		chart: { type: "line", height: 395, stacked: false, toolbar: { show: false }, zoom: { enabled: true } },
+		tooltip: {
+			shared: true, // Enable shared tooltips
+			intersect: false, // Tooltip will show even if there is no data point
+			custom: function({ series, seriesIndex, dataPointIndex, w }) {
+				// Define the formatter for currency
+				let formatter = new Intl.NumberFormat('en-US', {
+					style: 'currency',
+					currency: 'USD',
+					minimumFractionDigits: 0,
+					maximumFractionDigits: 0
+				});
+		
+				// Get the date/name for the tooltip title
+				let name = extendedDates[dataPointIndex];
+		
+				// Start building the tooltip
+				let tooltipHtml = '<div class="apexcharts-tooltip-title" style="font-size: 12px;">' + name + '</div>';
+		
+				if (seriesIndex === 0) { // If hovering over 'Actual'
+					// Format the actual value as currency
+					let actualValue = series[seriesIndex][dataPointIndex];
+					let actualFormatted = actualValue !== null ? formatter.format(actualValue) : '-';
+		
+					// Append the actual value to the tooltip HTML
+					tooltipHtml += '<div class="apexcharts-tooltip-series-group" style="order: 1; display: flex;">' +
+						'<div class="apexcharts-tooltip-text" style="display: flex; flex-direction: column; align-items: flex-start;">' +
+						'<div class="apexcharts-tooltip-y-group">' +
+						'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">' + w.config.series[seriesIndex].name + ' : </span>' +
+						'<span class="apexcharts-tooltip-text-value">' + actualFormatted + '</span>' +
+						'</div>' +
+						'</div>' +
+						'</div>';
+				} else { // If hovering over 'Forecast' or any other series
+					// Get the values for all forecast series at the hovered data point
+					let forecastValue = series[1][dataPointIndex] !== null ? formatter.format(series[2][dataPointIndex]) : '-';
+					let forecastHighValue = series[2][dataPointIndex] !== null ? formatter.format(series[1][dataPointIndex]) : '-';
+					let forecastLowValue = series[3][dataPointIndex] !== null ? formatter.format(series[3][dataPointIndex]) : '-';
+		
+					// Append forecast values to the tooltip HTML
+					tooltipHtml += '<div class="apexcharts-tooltip-series-group" style="order: 1; display: flex;">' +
+    								'<div class="apexcharts-tooltip-text" style="display: flex; flex-direction: column; align-items: flex-end;">' + // align-items changed to flex-end for right alignment
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast High : </span>' + // font-weight: bold for series names
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastHighValue + '</span>' + // font-family changed for numbers
+    								'</div>' +
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast : </span>' +
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastValue + '</span>' +
+    								'</div>' +
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast Low : </span>' +
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastLowValue + '</span>' +
+    								'</div>' +
+    								'</div>' +
+    								'</div>';
+				}
+		
+				// Return the assembled tooltip HTML
+				return tooltipHtml;
+			}
+		},
+		responsive: [{ breakpoint: 480, options: { legend: { position: "bottom", offsetX: -10, offsetY: 0 } } }],
+		plotOptions: { bar: { horizontal: false, borderRadius: 0 } },
+		xaxis: { categories: extendedDates },
+		fill: { opacity: 1 },
+		colors: getChartColorsArrayForecast("OverallCost_column_stacked"),
+	};
+
+	window.myChart = new ApexCharts(document.querySelector("#"+elements), options);
+    window.myChart.render();
+	
+	if(elements == "OverallCost_column_stacked-2"){
+		buildAskFIAnswerSummaryPrompt(extendedDates,series,"");
+	}
+}
+
+function ComputeCost(bu_name_parents,elements) {
+	let rawData = getTotalCountByDayForDateRange("2023-01-01","2023-12-31","Compute","Monthly");
+	let extendedDates = rawData.dates.concat(["Jan 2024", "Feb 2024", "Mar 2024", "Apr 2024", "May 2024"]);
+	var height = 395;
+	if(elements == "compute_column_stacked"){
+		if (window.ComputeChart) {
+			window.ComputeChart.destroy();
+		}
+	}
+	else{
+		height = 300;
+	}
+	let total_cost = "";
+	let Total = 0;
+	$.each(rawData.values, function (index, value) {
+	    Total += Number(value) || 0;
+	});
+
+	let ComputeCost_average = Total / 12;
+	let formattedTotal = formatNumberToUSD(ComputeCost_average);
+
+// Use the function to format the total number
+	if (bu_name_parents == "Business Unit I") {
+		// total_cost += `$3,142,334 <span  style = "font-size:17px;color:grey;font-weight: 100;">Avg Cost/Month For <span style="color:black;font-weight:600;">Business Unit I</span></span> `;
+
+    	// series = [
+    	//     {
+    	//         name: "Actual",
+    	//         data: rawData.values ,
+    	//     },
+    	//     {
+    	//         name: "Forecast",
+    	//         data: [null, null, null, null, null, null, null, null, null, null, null, 0, 1097868, 1147868, 1247868],
+    	//     }
+    	// ];
+	}  else {
+			total_cost += `$${formattedTotal} <span  style = "font-size:17px;color:grey;font-weight: 100;">Avg Cost/Month <span style="color:black;font-weight:600;">All Business Units</span>  </span>`;
+	
+			series = [
+				{ 
+					name: "Actual",
+				 	data:  rawData.values 
+				},
+				{
+					name: "Forecast High",
+					data: [null, null, null, null, null, null, null, null, null, null, null, null,652686, 692686, 721686, 740686, 769686],
+				},
+				{
+					name: "Forecast",
+					data: [null, null, null, null, null, null, null, null, null, null, null, 602686, 622686,	632686,	652686,	662686,	682686],
+				},
+				{
+					name: "Forecast Low",
+					data: [null, null, null, null, null, null, null, null, null, null, null, null,592686, 593186, 593686, 594186, 594686],
+				}
+			];
+		}
+	$(".Compute-Cost-total-cost").empty().append(total_cost);
+
+    // Chart options
+    var options = {
+		series,
+	legend: {
+			show: true,
+			showForSingleSeries: true,
+			customLegendItems: ['Actual', 'Forecast'],
+			itemMargin: {
+				horizontal: 10,
+				vertical: 5,
+			},
+		},
+		stroke: {
+			width: [4, 1, 4, 1],
+			dashArray: [0, 25, 25, 25] // Solid line for 'Actual', dashed line for 'Forecast'
+		},
+		dataLabels: {
+			enabled: false,
+		},
+		yaxis: {
+			labels: {
+				formatter: function (value) {
+					// Format the y-axis labels as currency
+					return new Intl.NumberFormat('en-US', {
+						style: 'currency',
+						currency: 'USD',
+						minimumFractionDigits: 0,
+						maximumFractionDigits: 0
+					}).format(value);
+				},
+			},
+		},
+		chart: { type: "line", height: height, stacked: false, toolbar: { show: false }, zoom: { enabled: true } },
+		tooltip: {
+			shared: true, // Enable shared tooltips
+			intersect: false, // Tooltip will show even if there is no data point
+			custom: function({ series, seriesIndex, dataPointIndex, w }) {
+				// Define the formatter for currency
+				let formatter = new Intl.NumberFormat('en-US', {
+					style: 'currency',
+					currency: 'USD',
+					minimumFractionDigits: 0,
+					maximumFractionDigits: 0
+				});
+		
+				// Get the date/name for the tooltip title
+				let name = extendedDates[dataPointIndex];
+		
+				// Start building the tooltip
+				let tooltipHtml = '<div class="apexcharts-tooltip-title" style="font-size: 12px;">' + name + '</div>';
+		
+				if (seriesIndex === 0) { // If hovering over 'Actual'
+					// Format the actual value as currency
+					let actualValue = series[seriesIndex][dataPointIndex];
+					let actualFormatted = actualValue !== null ? formatter.format(actualValue) : '-';
+		
+					// Append the actual value to the tooltip HTML
+					tooltipHtml += '<div class="apexcharts-tooltip-series-group" style="order: 1; display: flex;">' +
+						'<div class="apexcharts-tooltip-text" style="display: flex; flex-direction: column; align-items: flex-start;">' +
+						'<div class="apexcharts-tooltip-y-group">' +
+						'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">' + w.config.series[seriesIndex].name + ' : </span>' +
+						'<span class="apexcharts-tooltip-text-value">' + actualFormatted + '</span>' +
+						'</div>' +
+						'</div>' +
+						'</div>';
+				} else { // If hovering over 'Forecast' or any other series
+					// Get the values for all forecast series at the hovered data point
+					let forecastValue = series[1][dataPointIndex] !== null ? formatter.format(series[2][dataPointIndex]) : '-';
+					let forecastHighValue = series[2][dataPointIndex] !== null ? formatter.format(series[1][dataPointIndex]) : '-';
+					let forecastLowValue = series[3][dataPointIndex] !== null ? formatter.format(series[3][dataPointIndex]) : '-';
+		
+					// Append forecast values to the tooltip HTML
+					tooltipHtml += '<div class="apexcharts-tooltip-series-group" style="order: 1; display: flex;">' +
+    								'<div class="apexcharts-tooltip-text" style="display: flex; flex-direction: column; align-items: flex-end;">' + // align-items changed to flex-end for right alignment
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast High : </span>' + // font-weight: bold for series names
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastHighValue + '</span>' + // font-family changed for numbers
+    								'</div>' +
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast : </span>' +
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastValue + '</span>' +
+    								'</div>' +
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast Low : </span>' +
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastLowValue + '</span>' +
+    								'</div>' +
+    								'</div>' +
+    								'</div>';
+				}
+		
+				// Return the assembled tooltip HTML
+				return tooltipHtml;
+			}
+		},
+		
+		responsive: [{ breakpoint: 480, options: { legend: { position: "bottom", offsetX: -10, offsetY: 0 } } }],
+		plotOptions: { bar: { horizontal: false, borderRadius: 0 } },
+		xaxis: { categories: extendedDates },
+		fill: { opacity: 1 },
+		colors: getChartColorsArrayForecast(elements),
+	};
+
+    // Render the chart
+    window.ComputeChart = new ApexCharts(document.querySelector("#"+elements), options);
+    window.ComputeChart.render();
+
+	if(elements == "compute_column_stacked-2"){
+		buildAskFIAnswerSummaryPrompt(extendedDates,series);
+	}
+}
+
+function StorageCost(bu_name_parents,elements){
+	let rawData = getTotalCountByDayForDateRange("2023-01-01","2023-12-31","Storage","Monthly");
+	let extendedDates = rawData.dates.concat(["Jan 2024", "Feb 2024", "Mar 2024", "Apr 2024", "May 2024"]);
+	var height = 395;
+	if(elements == "storage_column_stacked"){
+		if (window.storageChart) {
+			window.storageChart.destroy();
+		}
+	}
+	else{
+		height = 300;
+	}
+	let total_cost = "";
+	let Total = 0;
+	$.each(rawData.values, function (index, value) {
+	    Total += Number(value) || 0;
+	});
+
+	let StorageCost_average = Total / 12;
+	let formattedTotal = formatNumberToUSD(StorageCost_average);
+
+// Use the function to format the total number
+	if (bu_name_parents == "Business Unit I") {
+		// total_cost += `$3,142,334 <span  style = "font-size:17px;color:grey;font-weight: 100;">Avg Cost/Month For <span style="color:black;font-weight:600;">Business Unit I</span></span> `;
+
+    	// series = [
+    	//     {
+    	//         name: "Actual",
+    	//         data: rawData.values ,
+    	//     },
+    	//     {
+    	//         name: "Forecast",
+    	//         data: [null, null, null, null, null, null, null, null, null, null, null, 0, 1097868, 1147868, 1247868],
+    	//     }
+    	// ];
+	}  else {
+			total_cost += `$${formattedTotal} <span  style = "font-size:17px;color:grey;font-weight: 100;">Avg Cost/Month <span style="color:black;font-weight:600;">All Business Units</span>  </span>`;
+	
+			series = [
+				{ 
+					name: "Actual",
+					data:  rawData.values 
+				},
+				{
+					name: "Forecast High",
+					data: [null, null, null, null, null, null, null, null, null, null, null, null,359596,400596,410596,430596,450596],
+				},
+				{
+					name: "Forecast",
+					data: [null, null, null, null, null, null, null, null, null, null, null, 295596, 325596,350596,360596,370596,380596]
+				},
+				{
+					name: "Forecast Low",
+					data: [null, null, null, null, null, null, null, null, null, null, null, null,300596,290796,290596,300596,309596],
+				}
+			];
+		}
+	$(".StorageCost-total-cost").empty().append(total_cost);
+    // Chart options
+    var options = {
+		series,
+	legend: {
+			show: true,
+			showForSingleSeries: true,
+			customLegendItems: ['Actual', 'Forecast'],
+			itemMargin: {
+				horizontal: 10,
+				vertical: 5,
+			},
+		},
+		stroke: {
+			width: [4, 1, 4, 1],
+			dashArray: [0, 25, 25, 25] // Solid line for 'Actual', dashed line for 'Forecast'
+		},
+		dataLabels: {
+			enabled: false,
+		},
+		yaxis: {
+			labels: {
+				formatter: function (value) {
+					// Format the y-axis labels as currency
+					return new Intl.NumberFormat('en-US', {
+						style: 'currency',
+						currency: 'USD',
+						minimumFractionDigits: 0,
+						maximumFractionDigits: 0
+					}).format(value);
+				},
+			},
+		},
+		chart: { type: "line", height: height, stacked: false, toolbar: { show: false }, zoom: { enabled: true } },
+		tooltip: {
+			shared: true, // Enable shared tooltips
+			intersect: false, // Tooltip will show even if there is no data point
+			custom: function({ series, seriesIndex, dataPointIndex, w }) {
+				// Define the formatter for currency
+				let formatter = new Intl.NumberFormat('en-US', {
+					style: 'currency',
+					currency: 'USD',
+					minimumFractionDigits: 0,
+					maximumFractionDigits: 0
+				});
+		
+				// Get the date/name for the tooltip title
+				let name = extendedDates[dataPointIndex];
+		
+				// Start building the tooltip
+				let tooltipHtml = '<div class="apexcharts-tooltip-title" style="font-size: 12px;">' + name + '</div>';
+		
+				if (seriesIndex === 0) { // If hovering over 'Actual'
+					// Format the actual value as currency
+					let actualValue = series[seriesIndex][dataPointIndex];
+					let actualFormatted = actualValue !== null ? formatter.format(actualValue) : '-';
+		
+					// Append the actual value to the tooltip HTML
+					tooltipHtml += '<div class="apexcharts-tooltip-series-group" style="order: 1; display: flex;">' +
+						'<div class="apexcharts-tooltip-text" style="display: flex; flex-direction: column; align-items: flex-start;">' +
+						'<div class="apexcharts-tooltip-y-group">' +
+						'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">' + w.config.series[seriesIndex].name + ' : </span>' +
+						'<span class="apexcharts-tooltip-text-value">' + actualFormatted + '</span>' +
+						'</div>' +
+						'</div>' +
+						'</div>';
+				} else { // If hovering over 'Forecast' or any other series
+					// Get the values for all forecast series at the hovered data point
+					let forecastValue = series[1][dataPointIndex] !== null ? formatter.format(series[2][dataPointIndex]) : '-';
+					let forecastHighValue = series[2][dataPointIndex] !== null ? formatter.format(series[1][dataPointIndex]) : '-';
+					let forecastLowValue = series[3][dataPointIndex] !== null ? formatter.format(series[3][dataPointIndex]) : '-';
+		
+					// Append forecast values to the tooltip HTML
+					tooltipHtml += '<div class="apexcharts-tooltip-series-group" style="order: 1; display: flex;">' +
+    								'<div class="apexcharts-tooltip-text" style="display: flex; flex-direction: column; align-items: flex-end;">' + // align-items changed to flex-end for right alignment
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast High : </span>' + // font-weight: bold for series names
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastHighValue + '</span>' + // font-family changed for numbers
+    								'</div>' +
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast : </span>' +
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastValue + '</span>' +
+    								'</div>' +
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast Low : </span>' +
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastLowValue + '</span>' +
+    								'</div>' +
+    								'</div>' +
+    								'</div>';
+				}
+		
+				// Return the assembled tooltip HTML
+				return tooltipHtml;
+			}
+		},
+		responsive: [{ breakpoint: 480, options: { legend: { position: "bottom", offsetX: -10, offsetY: 0 } } }],
+		plotOptions: { bar: { horizontal: false, borderRadius: 0 } },
+		xaxis: { categories: extendedDates },
+		fill: { opacity: 1 },
+		colors: getChartColorsArrayForecast(elements),
+	};
+
+    // Render the chart
+    window.storageChart = new ApexCharts(document.querySelector("#"+elements), options);
+    window.storageChart.render(); 	
+	
+	if(elements == "storage_column_stacked-2"){
+		buildAskFIAnswerSummaryPrompt(extendedDates,series);
+	}
+}
+
+function CloudServiceCost(bu_name_parents,elements){
+	let rawData = getTotalCountByDayForDateRange("2023-01-01","2023-12-31","Cloud Service","Monthly");
+	let extendedDates = rawData.dates.concat(["Jan 2024", "Feb 2024", "Mar 2024", "Apr 2024", "May 2024"]);
+	var height = 395;
+	if(elements == "CloudServiceCost_column_stacked"){
+		if (window.CloudServiceChart) {
+			window.CloudServiceChart.destroy();
+		}
+	}
+	else{
+		height = 300;
+	}
+    let total_cost = "";
+	let Total = 0;
+	$.each(rawData.values, function (index, value) {
+	    Total += Number(value) || 0;
+	});
+
+	let CloudServiceCost_average = Total / 12;
+	let formattedTotal = formatNumberToUSD(CloudServiceCost_average);
+
+	// Use the function to format the total number
+	if (bu_name_parents == "Business Unit I") {
+		// total_cost += `$3,142,334 <span  style = "font-size:17px;color:grey;font-weight: 100;">Avg Cost/Month For <span style="color:black;font-weight:600;">Business Unit I</span></span> `;
+
+    	// series = [
+    	//     {
+    	//         name: "Actual",
+    	//         data: rawData.values ,
+    	//     },
+    	//     {
+    	//         name: "Forecast",
+    	//         data: [null, null, null, null, null, null, null, null, null, null, null, 0, 1097868, 1147868, 1247868],
+    	//     }
+    	// ];
+	}  else {
+			total_cost += `$${formattedTotal} <span  style = "font-size:17px;color:grey;font-weight: 100;">Avg Cost/Month <span style="color:black;font-weight:600;">All Business Units</span>  </span>`;
+	
+			series = [
+				{ 
+					name: "Actual",
+				 	data:  rawData.values 
+				},
+				{
+					name: "Forecast High",
+					data: [null, null, null, null, null, null, null, null, null, null, null, null,51218,54218,56218,58218,60218],
+				},
+				{
+					name: "Forecast",
+					data: [null, null, null, null, null, null, null, null, null, null, null, 48218,49218,50218,52218,53218,54218]
+				},
+				{
+					name: "Forecast Low",
+					data: [null, null, null, null, null, null, null, null, null, null, null, null,47518,47218,48218,48918,49218],
+				}
+			];
+		}
+	$(".CloudServiceCost-total-cost").empty().append(total_cost);
+
+    // Chart options
+    var options = {
+		series,
+	legend: {
+			show: true,
+			showForSingleSeries: true,
+			customLegendItems: ['Actual', 'Forecast'],
+			itemMargin: {
+				horizontal: 10,
+				vertical: 5,
+			},
+		},
+		stroke: {
+			width: [4, 1, 4, 1],
+			dashArray: [0, 25, 25, 25] // Solid line for 'Actual', dashed line for 'Forecast'
+		},
+		dataLabels: {
+			enabled: false,
+		},
+		yaxis: {
+			labels: {
+				formatter: function (value) {
+					// Format the y-axis labels as currency
+					return new Intl.NumberFormat('en-US', {
+						style: 'currency',
+						currency: 'USD',
+						minimumFractionDigits: 0,
+						maximumFractionDigits: 0
+					}).format(value);
+				},
+			},
+		},
+		chart: { type: "line", height: height, stacked: false, toolbar: { show: false }, zoom: { enabled: true } },
+		tooltip: {
+			shared: true, // Enable shared tooltips
+			intersect: false, // Tooltip will show even if there is no data point
+			custom: function({ series, seriesIndex, dataPointIndex, w }) {
+				// Define the formatter for currency
+				let formatter = new Intl.NumberFormat('en-US', {
+					style: 'currency',
+					currency: 'USD',
+					minimumFractionDigits: 0,
+					maximumFractionDigits: 0
+				});
+		
+				// Get the date/name for the tooltip title
+				let name = extendedDates[dataPointIndex];
+		
+				// Start building the tooltip
+				let tooltipHtml = '<div class="apexcharts-tooltip-title" style="font-size: 12px;">' + name + '</div>';
+		
+				if (seriesIndex === 0) { // If hovering over 'Actual'
+					// Format the actual value as currency
+					let actualValue = series[seriesIndex][dataPointIndex];
+					let actualFormatted = actualValue !== null ? formatter.format(actualValue) : '-';
+		
+					// Append the actual value to the tooltip HTML
+					tooltipHtml += '<div class="apexcharts-tooltip-series-group" style="order: 1; display: flex;">' +
+						'<div class="apexcharts-tooltip-text" style="display: flex; flex-direction: column; align-items: flex-start;">' +
+						'<div class="apexcharts-tooltip-y-group">' +
+						'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">' + w.config.series[seriesIndex].name + ' : </span>' +
+						'<span class="apexcharts-tooltip-text-value">' + actualFormatted + '</span>' +
+						'</div>' +
+						'</div>' +
+						'</div>';
+				} else { // If hovering over 'Forecast' or any other series
+					// Get the values for all forecast series at the hovered data point
+					let forecastValue = series[1][dataPointIndex] !== null ? formatter.format(series[2][dataPointIndex]) : '-';
+					let forecastHighValue = series[2][dataPointIndex] !== null ? formatter.format(series[1][dataPointIndex]) : '-';
+					let forecastLowValue = series[3][dataPointIndex] !== null ? formatter.format(series[3][dataPointIndex]) : '-';
+		
+					// Append forecast values to the tooltip HTML
+					tooltipHtml += '<div class="apexcharts-tooltip-series-group" style="order: 1; display: flex;">' +
+    								'<div class="apexcharts-tooltip-text" style="display: flex; flex-direction: column; align-items: flex-end;">' + // align-items changed to flex-end for right alignment
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast High : </span>' + // font-weight: bold for series names
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastHighValue + '</span>' + // font-family changed for numbers
+    								'</div>' +
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast : </span>' +
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastValue + '</span>' +
+    								'</div>' +
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast Low : </span>' +
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastLowValue + '</span>' +
+    								'</div>' +
+    								'</div>' +
+    								'</div>';
+				}
+		
+				// Return the assembled tooltip HTML
+				return tooltipHtml;
+			}
+		},
+		responsive: [{ breakpoint: 480, options: { legend: { position: "bottom", offsetX: -10, offsetY: 0 } } }],
+		plotOptions: { bar: { horizontal: false, borderRadius: 0 } },
+		xaxis: { categories: extendedDates },
+		fill: { opacity: 1 },
+		colors: getChartColorsArrayForecast(elements),
+	};
+
+    // Render the chart
+    window.CloudServiceChart = new ApexCharts(document.querySelector("#"+elements), options);
+    window.CloudServiceChart.render(); 	
+	
+	if(elements == "CloudServiceCost_column_stacked-2"){
+		buildAskFIAnswerSummaryPrompt(extendedDates,series);
+	}
+}
+
+function DataTransferCost(bu_name_parents,elements){
+	let rawData = getTotalCountByDayForDateRange("2023-01-01","2023-12-31","Data Transfer","Monthly");
+	let extendedDates = rawData.dates.concat(["Jan 2024", "Feb 2024", "Mar 2024", "Apr 2024", "May 2024"]);
+	var height = 395;
+	if(elements == "DataTransferCost_column_stacked"){
+		if (window.DataTransferCostChart) {
+			window.DataTransferCostChart.destroy();
+		}
+	}
+	else{
+		height = 300;
+	}
+    let total_cost = "";
+	let Total = 0;
+	$.each(rawData.values, function (index, value) {
+	    Total += Number(value) || 0;
+	});
+
+	let DataTransferCost_average = Total / 12;
+	let formattedTotal = formatNumberToUSD(DataTransferCost_average);
+
+	// Use the function to format the total number
+	if (bu_name_parents == "Business Unit I") {
+		// total_cost += `$3,142,334 <span  style = "font-size:17px;color:grey;font-weight: 100;">Avg Cost/Month For <span style="color:black;font-weight:600;">Business Unit I</span></span> `;
+
+    	// series = [
+    	//     {
+    	//         name: "Actual",
+    	//         data: rawData.values ,
+    	//     },
+    	//     {
+    	//         name: "Forecast",
+    	//         data: [null, null, null, null, null, null, null, null, null, null, null, 0, 1097868, 1147868, 1247868],
+    	//     }
+    	// ];
+	}  else {
+			total_cost += `$${formattedTotal} <span  style = "font-size:17px;color:grey;font-weight: 100;">Avg Cost/Month <span style="color:black;font-weight:600;">All Business Units</span>  </span>`;
+	
+			series = [
+				{ 
+					name: "Actual",
+				 	data:  rawData.values 
+				},
+				{
+					name: "Forecast High",
+					data: [null, null, null, null, null, null, null, null, null, null, null, null, 52218,55218,57218,60218,63218],
+				},
+				{
+					name: "Forecast",
+					data: [null, null, null, null, null, null, null, null, null, null, null, 42952, 48218,50218,52218,53218,55218]
+				},
+				{
+					name: "Forecast Low",
+					data: [null, null, null, null, null, null, null, null, null, null, null, null, 45218,44918,45218,45918,46218],
+				}
+			];
+		}
+	$(".DataTransferCost-total-cost").empty().append(total_cost);
+
+    // Chart options
+    var options = {
+		series,
+	legend: {
+			show: true,
+			showForSingleSeries: true,
+			customLegendItems: ['Actual', 'Forecast'],
+			itemMargin: {
+				horizontal: 10,
+				vertical: 5,
+			},
+		},
+		stroke: {
+			width: [4, 1, 4, 1],
+			dashArray: [0, 25, 25, 25] // Solid line for 'Actual', dashed line for 'Forecast'
+		},
+		dataLabels: {
+			enabled: false,
+		},
+		yaxis: {
+			labels: {
+				formatter: function (value) {
+					// Format the y-axis labels as currency
+					return new Intl.NumberFormat('en-US', {
+						style: 'currency',
+						currency: 'USD',
+						minimumFractionDigits: 0,
+						maximumFractionDigits: 0
+					}).format(value);
+				},
+			},
+		},
+		chart: { type: "line", height: height, stacked: false, toolbar: { show: false }, zoom: { enabled: true } },
+		tooltip: {
+			shared: true, // Enable shared tooltips
+			intersect: false, // Tooltip will show even if there is no data point
+			custom: function({ series, seriesIndex, dataPointIndex, w }) {
+				// Define the formatter for currency
+				let formatter = new Intl.NumberFormat('en-US', {
+					style: 'currency',
+					currency: 'USD',
+					minimumFractionDigits: 0,
+					maximumFractionDigits: 0
+				});
+		
+				// Get the date/name for the tooltip title
+				let name = extendedDates[dataPointIndex];
+		
+				// Start building the tooltip
+				let tooltipHtml = '<div class="apexcharts-tooltip-title" style="font-size: 12px;">' + name + '</div>';
+		
+				if (seriesIndex === 0) { // If hovering over 'Actual'
+					// Format the actual value as currency
+					let actualValue = series[seriesIndex][dataPointIndex];
+					let actualFormatted = actualValue !== null ? formatter.format(actualValue) : '-';
+		
+					// Append the actual value to the tooltip HTML
+					tooltipHtml += '<div class="apexcharts-tooltip-series-group" style="order: 1; display: flex;">' +
+						'<div class="apexcharts-tooltip-text" style="display: flex; flex-direction: column; align-items: flex-start;">' +
+						'<div class="apexcharts-tooltip-y-group">' +
+						'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">' + w.config.series[seriesIndex].name + ' : </span>' +
+						'<span class="apexcharts-tooltip-text-value">' + actualFormatted + '</span>' +
+						'</div>' +
+						'</div>' +
+						'</div>';
+				} else { // If hovering over 'Forecast' or any other series
+					// Get the values for all forecast series at the hovered data point
+					let forecastValue = series[1][dataPointIndex] !== null ? formatter.format(series[2][dataPointIndex]) : '-';
+					let forecastHighValue = series[2][dataPointIndex] !== null ? formatter.format(series[1][dataPointIndex]) : '-';
+					let forecastLowValue = series[3][dataPointIndex] !== null ? formatter.format(series[3][dataPointIndex]) : '-';
+		
+					// Append forecast values to the tooltip HTML
+					tooltipHtml += '<div class="apexcharts-tooltip-series-group" style="order: 1; display: flex;">' +
+    								'<div class="apexcharts-tooltip-text" style="display: flex; flex-direction: column; align-items: flex-end;">' + // align-items changed to flex-end for right alignment
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast High : </span>' + // font-weight: bold for series names
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastHighValue + '</span>' + // font-family changed for numbers
+    								'</div>' +
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast : </span>' +
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastValue + '</span>' +
+    								'</div>' +
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast Low : </span>' +
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastLowValue + '</span>' +
+    								'</div>' +
+    								'</div>' +
+    								'</div>';
+				}
+		
+				// Return the assembled tooltip HTML
+				return tooltipHtml;
+			}
+		},
+		responsive: [{ breakpoint: 480, options: { legend: { position: "bottom", offsetX: -10, offsetY: 0 } } }],
+		plotOptions: { bar: { horizontal: false, borderRadius: 0 } },
+		xaxis: { categories: extendedDates },
+		fill: { opacity: 1 },
+		colors: getChartColorsArrayForecast(elements),
+	};
+
+    // Render the chart
+    window.DataTransferCostChart = new ApexCharts(document.querySelector("#"+elements), options);
+    window.DataTransferCostChart.render();
+	
+	if(elements == "DataTransferCost_column_stacked-2"){
+		buildAskFIAnswerSummaryPrompt(extendedDates,series);
+	}
+}
+
+function AutomaticClusteringCost(bu_name_parents,elements){
+	let rawData = getTotalCountByDayForDateRange("2023-01-01","2023-12-31","Automatic Clus","Monthly");
+	let extendedDates = rawData.dates.concat(["Jan 2024", "Feb 2024", "Mar 2024", "Apr 2024", "May 2024"]);
+	var height = 395;
+	if(elements == "AutomaticClustering_column_stacked"){
+		if (window.AutomaticClusteringCostChart) {
+			window.AutomaticClusteringCostChart.destroy();
+		}
+	}
+	else{
+		height = 300;
+	}
+    let total_cost = "";
+	let Total = 0;
+	$.each(rawData.values, function (index, value) {
+	    Total += Number(value) || 0;
+	});
+
+	let AutomaticClusteringCost_average = Total / 12;
+	let formattedTotal = formatNumberToUSD(AutomaticClusteringCost_average);
+
+// Use the function to format the total number
+	if (bu_name_parents == "Business Unit I") {
+		// total_cost += `$3,142,334 <span  style = "font-size:17px;color:grey;font-weight: 100;">Avg Cost/Month For <span style="color:black;font-weight:600;">Business Unit I</span></span> `;
+
+    	// series = [
+    	//     {
+    	//         name: "Actual",
+    	//         data: rawData.values ,
+    	//     },
+    	//     {
+    	//         name: "Forecast",
+    	//         data: [null, null, null, null, null, null, null, null, null, null, null, 0, 1097868, 1147868, 1247868],
+    	//     }
+    	// ];
+	}  else {
+			total_cost += `$${formattedTotal} <span  style = "font-size:17px;color:grey;font-weight: 100;">Avg Cost/Month <span style="color:black;font-weight:600;">All Business Units</span>  </span>`;
+	
+			series = [
+				{ 
+					name: "Actual",
+				 	data:  rawData.values 
+				},
+				{
+					name: "Forecast High",
+					data: [null, null, null, null, null, null, null, null, null, null, null, null, 38963,43363,45363,47363,50363],
+				},
+				{
+					name: "Forecast",
+					data: [null, null, null, null, null, null, null, null, null, null, null, 34363, 36363,38363,39363,41363,42363]
+				},
+				{
+					name: "Forecast Low",
+					data: [null, null, null, null, null, null, null, null, null, null, null, null, 33363,32363,32963,33363,34363],
+				}
+			];
+		}
+	$(".AutomaticClusteringCostChart-total-cost").empty().append(total_cost);
+
+    // Chart options
+    var options = {
+		series,
+	legend: {
+			show: true,
+			showForSingleSeries: true,
+			customLegendItems: ['Actual', 'Forecast'],
+			itemMargin: {
+				horizontal: 10,
+				vertical: 5,
+			},
+		},
+		stroke: {
+			width: [4, 1, 4, 1],
+			dashArray: [0, 25, 25, 25] // Solid line for 'Actual', dashed line for 'Forecast'
+		},
+		dataLabels: {
+			enabled: false,
+		},
+		yaxis: {
+			labels: {
+				formatter: function (value) {
+					// Format the y-axis labels as currency
+					return new Intl.NumberFormat('en-US', {
+						style: 'currency',
+						currency: 'USD',
+						minimumFractionDigits: 0,
+						maximumFractionDigits: 0
+					}).format(value);
+				},
+			},
+		},
+		chart: { type: "line", height: height, stacked: false, toolbar: { show: false }, zoom: { enabled: true } },
+		tooltip: {
+			shared: true, // Enable shared tooltips
+			intersect: false, // Tooltip will show even if there is no data point
+			custom: function({ series, seriesIndex, dataPointIndex, w }) {
+				// Define the formatter for currency
+				let formatter = new Intl.NumberFormat('en-US', {
+					style: 'currency',
+					currency: 'USD',
+					minimumFractionDigits: 0,
+					maximumFractionDigits: 0
+				});
+		
+				// Get the date/name for the tooltip title
+				let name = extendedDates[dataPointIndex];
+		
+				// Start building the tooltip
+				let tooltipHtml = '<div class="apexcharts-tooltip-title" style="font-size: 12px;">' + name + '</div>';
+		
+				if (seriesIndex === 0) { // If hovering over 'Actual'
+					// Format the actual value as currency
+					let actualValue = series[seriesIndex][dataPointIndex];
+					let actualFormatted = actualValue !== null ? formatter.format(actualValue) : '-';
+		
+					// Append the actual value to the tooltip HTML
+					tooltipHtml += '<div class="apexcharts-tooltip-series-group" style="order: 1; display: flex;">' +
+						'<div class="apexcharts-tooltip-text" style="display: flex; flex-direction: column; align-items: flex-start;">' +
+						'<div class="apexcharts-tooltip-y-group">' +
+						'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">' + w.config.series[seriesIndex].name + ' : </span>' +
+						'<span class="apexcharts-tooltip-text-value">' + actualFormatted + '</span>' +
+						'</div>' +
+						'</div>' +
+						'</div>';
+				} else { // If hovering over 'Forecast' or any other series
+					// Get the values for all forecast series at the hovered data point
+					let forecastValue = series[1][dataPointIndex] !== null ? formatter.format(series[2][dataPointIndex]) : '-';
+					let forecastHighValue = series[2][dataPointIndex] !== null ? formatter.format(series[1][dataPointIndex]) : '-';
+					let forecastLowValue = series[3][dataPointIndex] !== null ? formatter.format(series[3][dataPointIndex]) : '-';
+		
+					// Append forecast values to the tooltip HTML
+					tooltipHtml += '<div class="apexcharts-tooltip-series-group" style="order: 1; display: flex;">' +
+    								'<div class="apexcharts-tooltip-text" style="display: flex; flex-direction: column; align-items: flex-end;">' + // align-items changed to flex-end for right alignment
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast High : </span>' + // font-weight: bold for series names
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastHighValue + '</span>' + // font-family changed for numbers
+    								'</div>' +
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast : </span>' +
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastValue + '</span>' +
+    								'</div>' +
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast Low : </span>' +
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastLowValue + '</span>' +
+    								'</div>' +
+    								'</div>' +
+    								'</div>';
+				}
+		
+				// Return the assembled tooltip HTML
+				return tooltipHtml;
+			}
+		},
+		responsive: [{ breakpoint: 480, options: { legend: { position: "bottom", offsetX: -10, offsetY: 0 } } }],
+		plotOptions: { bar: { horizontal: false, borderRadius: 0 } },
+		xaxis: { categories: extendedDates },
+		fill: { opacity: 1 },
+		colors: getChartColorsArrayForecast(elements),
+	};
+
+    // Render the chart
+    window.AutomaticClusteringCostChart = new ApexCharts(document.querySelector("#"+elements), options);
+    window.AutomaticClusteringCostChart.render();
+	
+	if(elements == "AutomaticClustering_column_stacked-2"){
+		buildAskFIAnswerSummaryPrompt(extendedDates,series);
+	}
+}
+
+function ReplicationCost(bu_name_parents,elements){
+	let rawData = getTotalCountByDayForDateRange("2023-01-01","2023-12-31","Replication","Monthly");
+	let extendedDates = rawData.dates.concat(["Jan 2024", "Feb 2024", "Mar 2024", "Apr 2024", "May 2024"]);
+	var height = 395;
+	if(elements == "Replication_column_stacked"){
+		if (window.ReplicationCostChart) {
+			window.ReplicationCostChart.destroy();
+		}
+	}
+	else{
+		height = 300;
+	}
+    let total_cost = "";
+	let Total = 0;
+	$.each(rawData.values, function (index, value) {
+	    Total += Number(value) || 0;
+	});
+
+	let ReplicationCost_average = Total / 12;
+	let formattedTotal = formatNumberToUSD(ReplicationCost_average);
+
+// Use the function to format the total number
+	if (bu_name_parents == "Business Unit I") {
+		// total_cost += `$3,142,334 <span  style = "font-size:17px;color:grey;font-weight: 100;">Avg Cost/Month For <span style="color:black;font-weight:600;">Business Unit I</span></span> `;
+
+    	// series = [
+    	//     {
+    	//         name: "Actual",
+    	//         data: rawData.values ,
+    	//     },
+    	//     {
+    	//         name: "Forecast",
+    	//         data: [null, null, null, null, null, null, null, null, null, null, null, 0, 1097868, 1147868, 1247868],
+    	//     }
+    	// ];
+	}  else {
+			total_cost += `$${formattedTotal} <span  style = "font-size:17px;color:grey;font-weight: 100;">Avg Cost/Month <span style="color:black;font-weight:600;">All Business Units</span>  </span>`;
+	
+			series = [
+				{ 
+					name: "Actual",
+				 	data:  rawData.values 
+				},
+				{
+					name: "Forecast High",
+					data: [null, null, null, null, null, null, null, null, null, null, null, null, 30753,34053,36053,37053,40053],
+				},
+				{
+					name: "Forecast",
+					data: [null, null, null, null, null, null, null, null, null, null, null, 24053, 26053,28053,29053,30053,32053]
+				},
+				{
+					name: "Forecast Low",
+					data: [null, null, null, null, null, null, null, null, null, null, null, null, 22553,21753,21953,22053,23053],
+				}
+			];
+		}
+	$(".ReplicationCost-total-cost").empty().append(total_cost);
+
+    // Chart options
+    var options = {
+		series,
+	legend: {
+			show: true,
+			showForSingleSeries: true,
+			customLegendItems: ['Actual', 'Forecast'],
+			itemMargin: {
+				horizontal: 10,
+				vertical: 5,
+			},
+		},
+		stroke: {
+			width: [4, 1, 4, 1],
+			dashArray: [0, 25, 25, 25] // Solid line for 'Actual', dashed line for 'Forecast'
+		},
+		dataLabels: {
+			enabled: false,
+		},
+		yaxis: {
+			labels: {
+				formatter: function (value) {
+					// Format the y-axis labels as currency
+					return new Intl.NumberFormat('en-US', {
+						style: 'currency',
+						currency: 'USD',
+						minimumFractionDigits: 0,
+						maximumFractionDigits: 0
+					}).format(value);
+				},
+			},
+		},
+		chart: { type: "line", height: height, stacked: false, toolbar: { show: false }, zoom: { enabled: true } },
+		tooltip: {
+			shared: true, // Enable shared tooltips
+			intersect: false, // Tooltip will show even if there is no data point
+			custom: function({ series, seriesIndex, dataPointIndex, w }) {
+				// Define the formatter for currency
+				let formatter = new Intl.NumberFormat('en-US', {
+					style: 'currency',
+					currency: 'USD',
+					minimumFractionDigits: 0,
+					maximumFractionDigits: 0
+				});
+		
+				// Get the date/name for the tooltip title
+				let name = extendedDates[dataPointIndex];
+		
+				// Start building the tooltip
+				let tooltipHtml = '<div class="apexcharts-tooltip-title" style="font-size: 12px;">' + name + '</div>';
+		
+				if (seriesIndex === 0) { // If hovering over 'Actual'
+					// Format the actual value as currency
+					let actualValue = series[seriesIndex][dataPointIndex];
+					let actualFormatted = actualValue !== null ? formatter.format(actualValue) : '-';
+		
+					// Append the actual value to the tooltip HTML
+					tooltipHtml += '<div class="apexcharts-tooltip-series-group" style="order: 1; display: flex;">' +
+						'<div class="apexcharts-tooltip-text" style="display: flex; flex-direction: column; align-items: flex-start;">' +
+						'<div class="apexcharts-tooltip-y-group">' +
+						'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">' + w.config.series[seriesIndex].name + ' : </span>' +
+						'<span class="apexcharts-tooltip-text-value">' + actualFormatted + '</span>' +
+						'</div>' +
+						'</div>' +
+						'</div>';
+				} else { // If hovering over 'Forecast' or any other series
+					// Get the values for all forecast series at the hovered data point
+					let forecastValue = series[1][dataPointIndex] !== null ? formatter.format(series[2][dataPointIndex]) : '-';
+					let forecastHighValue = series[2][dataPointIndex] !== null ? formatter.format(series[1][dataPointIndex]) : '-';
+					let forecastLowValue = series[3][dataPointIndex] !== null ? formatter.format(series[3][dataPointIndex]) : '-';
+		
+					// Append forecast values to the tooltip HTML
+					tooltipHtml += '<div class="apexcharts-tooltip-series-group" style="order: 1; display: flex;">' +
+    								'<div class="apexcharts-tooltip-text" style="display: flex; flex-direction: column; align-items: flex-end;">' + // align-items changed to flex-end for right alignment
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast High : </span>' + // font-weight: bold for series names
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastHighValue + '</span>' + // font-family changed for numbers
+    								'</div>' +
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast : </span>' +
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastValue + '</span>' +
+    								'</div>' +
+    								'<div class="apexcharts-tooltip-y-group">' +
+    								'<span class="apexcharts-tooltip-text-label" style="font-weight: bold;">Forecast Low : </span>' +
+    								'<span class="apexcharts-tooltip-text-value" style="font-family: Arial, sans-serif;">' + forecastLowValue + '</span>' +
+    								'</div>' +
+    								'</div>' +
+    								'</div>';
+				}
+		
+				// Return the assembled tooltip HTML
+				return tooltipHtml;
+			}
+		},
+		responsive: [{ breakpoint: 480, options: { legend: { position: "bottom", offsetX: -10, offsetY: 0 } } }],
+		plotOptions: { bar: { horizontal: false, borderRadius: 0 } },
+		xaxis: { categories: extendedDates },
+		fill: { opacity: 1 },
+		colors: getChartColorsArrayForecast(elements),
+	};
+
+    // Render the chart
+    window.ReplicationCostChart = new ApexCharts(document.querySelector("#"+elements), options);
+    window.ReplicationCostChart.render();
+	
+	if(elements == "Replication_column_stacked-2"){
+		buildAskFIAnswerSummaryPrompt(extendedDates,series);
+	}
+}
+
+function getChartColorsArrayForecast(chartId){
+	if(null !== document.getElementById(chartId)){
+		if(chartId == "OverallCost_column_stacked" || chartId == "OverallCost_column_stacked-2"){
+			var r = '["#05c4fc", "#ffa117", "#ffa117","#ffa117" ]';
+		}
+		else if(chartId == "storage_column_stacked" || chartId == "storage_column_stacked-2"){
+			var r = '["#05c4fc", "#ffa117", "#ffa117","#ffa117" ]';
+		}
+		else if(chartId == "compute_column_stacked" || chartId == "compute_column_stacked-2"){
+			var r = '["#05c4fc", "#ffa117", "#ffa117","#ffa117" ]';
+		}
+		else if(chartId == "CloudServiceCost_column_stacked" || chartId == "CloudServiceCost_column_stacked-2"){
+			var r = '["#05c4fc", "#ffa117", "#ffa117","#ffa117" ]';
+		}
+		else if(chartId == "DataTransferCost_column_stacked" || chartId == "DataTransferCost_column_stacked-2"){
+			var r = '["#05c4fc", "#ffa117", "#ffa117","#ffa117" ]';
+		}
+		else if(chartId == "AutomaticClustering_column_stacked" || chartId == "AutomaticClustering_column_stacked-2"){
+			var r = '["#05c4fc", "#ffa117", "#ffa117","#ffa117" ]';
+		}
+		else if(chartId == "Replication_column_stacked" || chartId == "Replication_column_stacked-2"){
+			var r = '["#05c4fc", "#ffa117", "#ffa117","#ffa117" ]';
+		}
+		else if(chartId == "Snowpipe_column_stacked" || chartId == "Snowpipe_column_stacked-2"){
+			var r = '["#05c4fc", "#ffa117", "#ffa117","#ffa117" ]';
+		}
+		else if(chartId == "Adjustments_column_stacked" || chartId == "Adjustments_column_stacked-2"){
+			var r = '["#05c4fc", "#ffa117", "#ffa117","#ffa117" ]';
+		}
+		return(r = JSON.parse(r)).map(function(e){
+			var r = e.replace(" ", "");
+			if (-1 == r.indexOf("--")) return r;
+			var t = getComputedStyle(document.documentElement).getPropertyValue(r);
+			return t || void 0;
+		});
+	}
+}
+
+$(document).on("mouseover mouseout", ".page-aws-forecast .card", function(event) {
+	if (event.type === "mouseover") {
+		$(this).find(".ask-fi-btn").show();
+	} 
+	else if (event.type === "mouseout") {
+		$(this).find(".ask-fi-btn").hide();
+	}
+});
+
+function askFIModal(btn,type){
+	var askFIContent = "";
+	var contactContent = "";
+	contactContent+='<div class="row">\
+		<div class="col-12">\
+			<h4>Contact</h4>\
+			<div class="row">\
+				<div class="col-xxl-6">\
+					<div class="user-sidebar">\
+						<div class="card">\
+							<div class="card-body p-0">\
+								<div class="user-profile-img">\
+									<img src="assets/images/pattern-bg.jpg" class="profile-img profile-foreground-img rounded-top" style="height: 120px;" alt="" />\
+									<div class="overlay-content rounded-top">\
+										<div>\
+											<div class="user-nav p-3">\
+												<div class="d-flex justify-content-end">\
+													<div class="dropdown">\
+														<a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">\
+															<i data-eva="more-horizontal-outline" data-eva-width="20" data-eva-height="20" class="fill-white"></i>\
+														</a>\
+														<ul class="dropdown-menu dropdown-menu-end">\
+															<li>\
+																<a class="dropdown-item" href="#">Action</a>\
+															</li>\
+															<li>\
+																<a class="dropdown-item" href="#">Another action</a>\
+															</li>\
+															<li>\
+																<a class="dropdown-item" href="#">Something else here</a>\
+															</li>\
+														</ul>\
+													</div>\
+												</div>\
+											</div>\
+										</div>\
+									</div>\
+								</div>\
+								<!-- end user-profile-img -->\
+								<div class="mt-n5 position-relative">\
+									<div class="text-center">\
+										<img src="assets/images/users/avatar-1.jpg" class="avatar-xl rounded-circle img-thumbnail" />\
+										<div class="mt-3">\
+											<h5 class="mb-1">Celia Smith</h5>\
+											<p class="text-muted">Business Owner</p>\
+										</div>\
+										<div class="mb-3">\
+											<a href="mailto:jacob.david@gmai.com" class="btn btn-outline-dark btn-sm br-5 me-1"> <i class="fal fa-envelope"></i> Email </a>\
+											<button type="button" class="btn btn-outline-dark btn-sm br-5 ms-1"><i class="fal fa-comment"></i> Chat</button>\
+										</div>\
+									</div>\
+								</div>\
+							</div>\
+							<!-- end card body -->\
+						</div>\
+						<!-- end card -->\
+					</div>\
+				</div>\
+				\
+				<div class="col-xxl-6">\
+					<div class="user-sidebar">\
+						<div class="card">\
+							<div class="card-body p-0">\
+								<div class="user-profile-img">\
+									<img src="assets/images/pattern-bg.jpg" class="profile-img profile-foreground-img rounded-top" style="height: 120px;" alt="" />\
+									<div class="overlay-content rounded-top">\
+										<div>\
+											<div class="user-nav p-3">\
+												<div class="d-flex justify-content-end">\
+													<div class="dropdown">\
+														<a class="dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">\
+															<i data-eva="more-horizontal-outline" data-eva-width="20" data-eva-height="20" class="fill-white"></i>\
+														</a>\
+														<ul class="dropdown-menu dropdown-menu-end">\
+															<li>\
+																<a class="dropdown-item" href="#">Action</a>\
+															</li>\
+															<li>\
+																<a class="dropdown-item" href="#">Another action</a>\
+															</li>\
+															<li>\
+																<a class="dropdown-item" href="#">Something else here</a>\
+															</li>\
+														</ul>\
+													</div>\
+												</div>\
+											</div>\
+										</div>\
+									</div>\
+								</div>\
+								<!-- end user-profile-img -->\
+								<div class="mt-n5 position-relative">\
+									<div class="text-center">\
+										<img src="assets/images/users/avatar-2.jpg" class="avatar-xl rounded-circle img-thumbnail" />\
+										<div class="mt-3">\
+											<h5 class="mb-1">Jacob David</h5>\
+											<p class="text-muted">Technical Owner</p>\
+										</div>\
+										<div class="mb-3">\
+											<a href="mailto:jacob.david@gmai.com" class="btn btn-outline-dark btn-sm br-5 me-1"> <i class="fal fa-envelope"></i> Email </a>\
+											<button type="button" class="btn btn-outline-dark btn-sm br-5 ms-1"><i class="fal fa-comment"></i> Chat</button>\
+										</div>\
+									</div>\
+								</div>\
+							</div>\
+							<!-- end card body -->\
+						</div>\
+						<!-- end card -->\
+					</div>\
+				</div>\
+			</div>\
+		</div>\
+	</div>';
+	
+	askFIContent += '<div class="ask-fi-content">';
+		if(type == 1){
+			askFIContent += '<div class="row">\
+				<div class="col-sm-6">\
+					<div class="card">\
+						<div class="card-body pb-0">\
+							<div class="d-flex align-items-start">\
+								<div class="d-flex flex-grow-1 align-items-center">\
+									<img src="assets/images/brands/aws.png" style="max-height:30px;"/>\
+									<h5 class="card-title mb-3 d-inline-block ms-2">Overall Cost Forecast<span class="applied-drpdwns"></span></h5>\
+								</div>\
+							</div>\
+							<div class="mt-3 mb-3">\
+								<div class="d-flex flex-wrap align-items-center gap-2">\
+								  <h2 class="total-cost mb-0"></h2>\
+								</div>\
+							</div>\
+							<div class="row gy-4">\
+								<div class="col-xxl-12 mt-4">\
+									<div>\
+										<div id="OverallCost_column_stacked-2" class="apex-charts mb-3" dir="ltr"></div>\
+									</div>\
+								</div>\
+							</div>\
+						</div>\
+					</div>\
+					'+contactContent+'\
+				</div>\
+				<div class="col-sm-6">\
+					<div class="fi-res-ans-insights mb-4">\
+						<div class="fi-res-answer-block p-0 d-flex">\
+							<div class="fi-res-ans-label">\
+								<img src="assets/images/finops-ai-logo-1.jpg" class="img-fluid"/>\
+							</div>\
+							<div class="fi-res-ans-txt">\
+								<h5>Here are some Insights:</h5>\
+								<div class="ask-fi-res-ans fi-res-ans-insights"></div>\
+							</div>\
+						</div>\
+					</div>\
+					<div class="ask-fi-prompt-data d-none" prompt_type=""></div>\
+					<div class="fi-res-ans-recommendations mb-4" style="display:none;">\
+						<div class="fi-res-answer-block p-0 d-flex">\
+							<div class="fi-res-ans-label">\
+								<img src="assets/images/finops-ai-logo-1.jpg" class="img-fluid"/>\
+							</div>\
+							<div class="fi-res-ans-txt">\
+								<h5>Here are some Recommendations:</h5>\
+								<div class="ask-fi-res-ans"></div>\
+								<p class="mt-3" style="display:none;">Based on your usage data, I have actionable recommendations for you. You can view and take action on then.</p>\
+								<a href="#page=snowflake-recommendations&type=overall" class="btn btn-primary" onclick="bootbox.hideAll();" style="display:none;">View Recommendations</a>\
+							</div>\
+						</div>\
+					</div>\
+				</div>\
+			</div>';
+		}
+		else if(type == 2){
+			askFIContent += '<div class="row">\
+				<div class="col-sm-6">\
+					<div class="card">\
+						<div class="card-body pb-0">\
+							<div class="d-flex align-items-start">\
+								<div class="flex-grow-1">\
+									<img src="assets/images/brands/snowflake.png" style="max-height:30px;"/>\
+									<h5 class="card-title mb-3 d-inline-block ms-2">EC2 Cost Forecast<span class="applied-drpdwns"></span></h5>\
+								</div>\
+							</div>\
+							<div class="mt-3 mb-3">\
+								<div class="d-flex flex-wrap align-items-center gap-2">\
+								  <h2 class="Compute-Cost-total-cost mb-0"></h2>\
+								</div>\
+							</div>\
+							<div class="row gy-4">\
+								<div class="col-xxl-12 mt-4">\
+									<div>\
+										<div id="compute_column_stacked-2" class="apex-charts mb-3" dir="ltr"></div>\
+									</div>\
+								</div>\
+							</div>\
+						</div>\
+					</div>\
+					'+contactContent+'\
+				</div>\
+				<div class="col-sm-6">\
+					<div class="fi-res-ans-insights mb-4">\
+						<div class="fi-res-answer-block p-0 d-flex">\
+							<div class="fi-res-ans-label">\
+								<img src="assets/images/finops-ai-logo-1.jpg" class="img-fluid"/>\
+							</div>\
+							<div class="fi-res-ans-txt">\
+								<h5>Here are some Insights:</h5>\
+								<div class="ask-fi-res-ans fi-res-ans-insights"></div>\
+							</div>\
+						</div>\
+					</div>\
+					<div class="ask-fi-prompt-data d-none" prompt_type="EC2"></div>\
+					<div class="fi-res-ans-recommendations mb-4" style="display:none;">\
+						<div class="fi-res-answer-block p-0 d-flex">\
+							<div class="fi-res-ans-label">\
+								<img src="assets/images/finops-ai-logo-1.jpg" class="img-fluid"/>\
+							</div>\
+							<div class="fi-res-ans-txt">\
+								<h5>Here are some Recommendations:</h5>\
+								<div class="ask-fi-res-ans"></div>\
+								<p class="mt-3" style="display:none;">Based on your usage data, I have actionable recommendations for you. You can view and take action on then.</p>\
+								<a href="#page=snowflake-recommendations&type=compute" class="btn btn-primary" onclick="bootbox.hideAll();" style="display:none;">View Recommendations</a>\
+							</div>\
+						</div>\
+					</div>\
+				</div>\
+			</div>';
+		}
+		else if(type == 3){
+			askFIContent += '<div class="row">\
+				<div class="col-sm-6">\
+					<div class="card">\
+						<div class="card-body pb-0">\
+							<div class="d-flex align-items-start">\
+								<div class="flex-grow-1">\
+									<img src="assets/images/brands/snowflake.png" style="max-height:30px;"/>\
+									<h5 class="card-title mb-3 d-inline-block ms-2">RDS Cost Forecast<span class="applied-drpdwns"></span></h5>\
+								</div>\
+							</div>\
+							<div class="mt-3 mb-3">\
+								<div class="d-flex flex-wrap align-items-center gap-2">\
+								  <h2 class="StorageCost-total-cost mb-0"></h2>\
+								</div>\
+							</div>\
+							<div class="row gy-4">\
+								<div class="col-xxl-12 mt-4">\
+									<div>\
+										<div id="storage_column_stacked-2" class="apex-charts mb-3" dir="ltr"></div>\
+									</div>\
+								</div>\
+							</div>\
+						</div>\
+					</div>\
+					'+contactContent+'\
+				</div>\
+				<div class="col-sm-6">\
+					<div class="fi-res-ans-insights mb-4">\
+						<div class="fi-res-answer-block p-0 d-flex">\
+							<div class="fi-res-ans-label">\
+								<img src="assets/images/finops-ai-logo-1.jpg" class="img-fluid"/>\
+							</div>\
+							<div class="fi-res-ans-txt">\
+								<h5>Here are some Insights:</h5>\
+								<div class="ask-fi-res-ans fi-res-ans-insights"></div>\
+							</div>\
+						</div>\
+					</div>\
+					<div class="ask-fi-prompt-data d-none" prompt_type="RDS"></div>\
+					<div class="fi-res-ans-recommendations mb-4" style="display:none;">\
+						<div class="fi-res-answer-block p-0 d-flex">\
+							<div class="fi-res-ans-label">\
+								<img src="assets/images/finops-ai-logo-1.jpg" class="img-fluid"/>\
+							</div>\
+							<div class="fi-res-ans-txt">\
+								<h5>Here are some Recommendations:</h5>\
+								<div class="ask-fi-res-ans"></div>\
+								<p class="mt-3" style="display:none;">Based on your usage data, I have actionable recommendations for you. You can view and take action on then.</p>\
+								<a href="#page=snowflake-recommendations&type=storage" class="btn btn-primary" onclick="bootbox.hideAll();" style="display:none;">View Recommendations</a>\
+							</div>\
+						</div>\
+					</div>\
+				</div>\
+			</div>';
+		}
+		else if(type == 4){
+			askFIContent += '<div class="row">\
+				<div class="col-sm-6">\
+					<div class="card">\
+						<div class="card-body pb-0">\
+							<div class="d-flex align-items-start">\
+								<div class="flex-grow-1">\
+									<img src="assets/images/brands/snowflake.png" style="max-height:30px;"/>\
+									<h5 class="card-title mb-3 d-inline-block ms-2">EBS Cost Forecast<span class="applied-drpdwns"></span></h5>\
+								</div>\
+							</div>\
+							<div class="mt-3 mb-3">\
+								<div class="d-flex flex-wrap align-items-center gap-2">\
+								  <h2 class="CloudServiceCost-total-cost mb-0"></h2>\
+								</div>\
+							</div>\
+							<div class="row gy-4">\
+								<div class="col-xxl-12 mt-4">\
+									<div>\
+										<div id="CloudServiceCost_column_stacked-2" class="apex-charts mb-3" dir="ltr"></div>\
+									</div>\
+								</div>\
+							</div>\
+						</div>\
+					</div>\
+					'+contactContent+'\
+				</div>\
+				<div class="col-sm-6">\
+					<div class="fi-res-ans-insights mb-4">\
+						<div class="fi-res-answer-block p-0 d-flex">\
+							<div class="fi-res-ans-label">\
+								<img src="assets/images/finops-ai-logo-1.jpg" class="img-fluid"/>\
+							</div>\
+							<div class="fi-res-ans-txt">\
+								<h5>Here are some Insights:</h5>\
+								<div class="ask-fi-res-ans fi-res-ans-insights"></div>\
+							</div>\
+						</div>\
+					</div>\
+					<div class="ask-fi-prompt-data d-none" prompt_type="EBS"></div>\
+					<div class="fi-res-ans-recommendations mb-4" style="display:none;">\
+						<div class="fi-res-answer-block p-0 d-flex">\
+							<div class="fi-res-ans-label">\
+								<img src="assets/images/finops-ai-logo-1.jpg" class="img-fluid"/>\
+							</div>\
+							<div class="fi-res-ans-txt">\
+								<h5>Here are some Recommendations:</h5>\
+								<div class="ask-fi-res-ans"></div>\
+								<p class="mt-3" style="display:none;">Based on your usage data, I have actionable recommendations for you. You can view and take action on then.</p>\
+								<a href="#page=snowflake-recommendations&type=cloudService" class="btn btn-primary" onclick="bootbox.hideAll();" style="display:none;">View Recommendations</a>\
+							</div>\
+						</div>\
+					</div>\
+				</div>\
+			</div>';
+		}
+		else if(type == 5){
+			askFIContent += '<div class="row">\
+				<div class="col-sm-6">\
+					<div class="card">\
+						<div class="card-body pb-0">\
+							<div class="d-flex align-items-start">\
+								<div class="flex-grow-1">\
+									<img src="assets/images/brands/snowflake.png" style="max-height:30px;"/>\
+									<h5 class="card-title mb-3 d-inline-block ms-2">RedShift Cost Forecast<span class="applied-drpdwns"></span></h5>\
+								</div>\
+							</div>\
+							<div class="mt-3 mb-3">\
+								<div class="d-flex flex-wrap align-items-center gap-2">\
+								  <h2 class="DataTransferCost-total-cost mb-0"></h2>\
+								</div>\
+							</div>\
+							<div class="row gy-4">\
+								<div class="col-xxl-12 mt-4">\
+									<div>\
+										<div id="DataTransferCost_column_stacked-2" class="apex-charts mb-3" dir="ltr"></div>\
+									</div>\
+								</div>\
+							</div>\
+						</div>\
+					</div>\
+					'+contactContent+'\
+				</div>\
+				<div class="col-sm-6">\
+					<div class="fi-res-ans-insights mb-4">\
+						<div class="fi-res-answer-block p-0 d-flex">\
+							<div class="fi-res-ans-label">\
+								<img src="assets/images/finops-ai-logo-1.jpg" class="img-fluid"/>\
+							</div>\
+							<div class="fi-res-ans-txt">\
+								<h5>Here are some Insights:</h5>\
+								<div class="ask-fi-res-ans fi-res-ans-insights"></div>\
+							</div>\
+						</div>\
+					</div>\
+					<div class="ask-fi-prompt-data d-none" prompt_type="RedShift"></div>\
+					<div class="fi-res-ans-recommendations mb-4" style="display:none;">\
+						<div class="fi-res-answer-block p-0 d-flex">\
+							<div class="fi-res-ans-label">\
+								<img src="assets/images/finops-ai-logo-1.jpg" class="img-fluid"/>\
+							</div>\
+							<div class="fi-res-ans-txt">\
+								<h5>Here are some Recommendations:</h5>\
+								<div class="ask-fi-res-ans"></div>\
+								<p class="mt-3" style="display:none;">Based on your usage data, I have actionable recommendations for you. You can view and take action on then.</p>\
+								<a href="#page=snowflake-recommendations&type=dataTransfer" class="btn btn-primary" onclick="bootbox.hideAll();" style="display:none;">View Recommendations</a>\
+							</div>\
+						</div>\
+					</div>\
+				</div>\
+			</div>';
+		}
+	askFIContent += '</div>';
+	bootbox.dialog({
+		title	: "<b>Ask FI</b>",
+		message	: askFIContent,
+		animate	: false,
+		size	: 'extra-large',
+		className : "AskFIModal"
+	});
+	$(".modal-backdrop").css("opacity",0.8);	
+	var windowHeight = $(window).height() - 150;
+    $(".ask-fi-content").height(windowHeight);
+
+	if(type == 1){
+		OverAllCostForecast("","OverallCost_column_stacked-2");
+	}
+	else if(type == 2){
+		ComputeCost("","compute_column_stacked-2");
+	}
+	else if(type == 3){
+		StorageCost("","storage_column_stacked-2");
+	}
+	else if(type == 4){
+		CloudServiceCost("","CloudServiceCost_column_stacked-2");
+	}
+	else if(type == 5){
+		DataTransferCost("","DataTransferCost_column_stacked-2");
+	}
+}
+buildForecastPageContent()
+
+</script>
+</html>
